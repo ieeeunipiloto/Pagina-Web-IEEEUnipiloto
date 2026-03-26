@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ieee-unipiloto
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "./start.sh"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
