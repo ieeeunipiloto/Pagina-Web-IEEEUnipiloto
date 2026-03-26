@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="mb-4 text-center">
+                <strong class="text-danger text-uppercase">Bitácora de Evento</strong>
+                <h1 class="display-4 fw-bold">{{ post.titulo }}</h1>
+                <p class="text-muted">
+                    <i class="bi bi-calendar3"></i> 
+                    {% if post.fecha_fin %}
+                        Del {{ post.fecha_inicio|date:"d" }} al {{ post.fecha_fin|date:"d \d\e F, Y" }}
+                    {% else %}
+                        {{ post.fecha_inicio|date:"d \d\e F, Y" }}
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if post.imagen %}
+                <img src="{{ post.imagen.url }}" class="img-fluid w-100 shadow rounded mb-5" alt="{{ post.titulo }}">
+            {% endif %}
+
+            <div class="lh-lg fs-5" style="white-space: pre-wrap;">
+                {{ post.contenido }}
+            </div>
+
+            <hr class="my-5">
+            <a href="{% url 'home' %}" class="btn btn-outline-dark">← Volver al inicio</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
