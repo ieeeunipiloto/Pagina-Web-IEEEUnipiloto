@@ -9,6 +9,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('proyecto/<int:pk>/', views.detalle_proyecto, name='detalle_proyecto'),
     path('noticia/<int:pk>/', views.detalle_post, name='detalle_post'),
+    path('ieee-unipiloto/', views.informacion_ieee, name='ieee_unipiloto'),
+    
 ]
 
 # ESTO HACE QUE LAS IMÁGENES SE VEAN EN DESARROLLO
