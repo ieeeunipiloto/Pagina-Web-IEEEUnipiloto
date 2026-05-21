@@ -1,0 +1,99 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row align-items-center mb-5 border-bottom pb-4">
+        <div class="col-md-3 text-center">
+            <img src="{% static 'core/img/logo_ieee_unipiloto.png' %}" alt="Logo IEEE Unipiloto" class="img-fluid" style="max-height: 120px;">
+        </div>
+        <div class="col-md-9 text-md-start text-center">
+            <h1 class="display-4 fw-bold text-dark">Rama Estudiantil IEEE</h1>
+            <h2 class="h3 text-danger fw-normal">Universidad Piloto de Colombia</h2>
+            <p class="text-muted lead">Fomentando la innovación tecnológica y la excelencia académica.</p>
+        </div>
+    </div>
+<div class="row g-5 mb-5">
+        <div class="col-md-7">
+            <h3 class="fw-bold border-start border-4 border-danger ps-3 mb-3">IEEE</h3>
+            <p class="lh-lg justify-content-italic">Instituto de Ingenieros Eléctricos y Electrónicos es la
+organización técnica profesional más grande del mundo, dedicada al avance de la tecnología en electricidad, electrónica, telecomunicaciones e informática. Es una entidad sin fines de lucro que desarrolla estándares internacionales clave (como Wi-Fi y Ethernet), publica literatura científica y promueve la innovación tecnológica global.</p>
+        </div>
+    <div class="row g-5 mb-5">
+        <div class="col-md-7">
+            <h3 class="fw-bold border-start border-4 border-danger ps-3 mb-3">Sobre Nosotros</h3>
+            <p class="lh-lg justify-content-italic">La Rama Estudiantil IEEE Unipiloto es un grupo dinámico de estudiantes de ingeniería dedicados a avanzar la tecnología para la humanidad. Trabajamos en colaboración con el **Semillero IoT** para prototipar soluciones reales y participar en congresos técnicos.</p>
+        </div>
+        <div class="col-md-5 bg-light p-4 rounded shadow-sm">
+            <h5 class="fw-bold text-primary">Nuestros Pilares</h5>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check-circle-fill text-danger me-2"></i> Investigación Aplicada</li>
+                <li><i class="bi bi-check-circle-fill text-danger me-2"></i> Liderazgo Estudiantil</li>
+                <li><i class="bi bi-check-circle-fill text-danger me-2"></i> Ética Profesional (NTC 1486)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mb-5 pt-4">
+        <div class="col-12">
+            <h3 class="fw-bold border-start border-4 border-primary ps-3 mb-4 text-uppercase">Equipo de Trabajo</h3>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <img src="{% static 'core/img/integrantes/carolina.jpg' %}" alt="Santiago Chávez - Presidente de la rama IEEE"  style="width: 120px; height: 120px; object-fit: cover;">
+                    <h5 class="fw-bold mb-1" </h5>
+                    <p class="text-danger small fw-bold">Líder Semillero IoT / IEEE Chair</p>
+                    <p class="card-text small text-muted">Estudiante de Ingeniería de Sistemas. Pasión por IoT y Ciberseguridad.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <img src="{% static 'core/img/integrantes/carolina.jpg' %}" alt="Esteban Guzman - Vicepresidente de la rama IEEE"  style="width: 120px; height: 120px; object-fit: cover;">
+                    <h5 class="fw-bold mb-1" </h5>
+                    <p class="text-danger small fw-bold">Líder Semillero IoT / IEEE Chair</p>
+                    <p class="card-text small text-muted">Estudiante de Ingeniería de Sistemas. Pasión por IoT y Hologramas.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <img src="{% static 'core/img/integrantes/carolina.jpg' %}" alt="Carolina Sanchez - Secretaria de la rama IEEE"  style="width: 120px; height: 120px; object-fit: cover;">
+                    <h5 class="fw-bold mb-1" </h5>
+                    <p class="text-danger small fw-bold">Líder Semillero IoT / IEEE Chair</p>
+                    <p class="card-text small text-muted">Estudiante de Ingeniería de Sistemas. Pasión por IoT y Energias renovables .</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <img src="{% static 'core/img/integrantes/luis_felipe.jpg' %}" alt="Luis Felipe Herrera"  style="width: 120px; height: 120px; object-fit: cover;">
+                    <h5 class="fw-bold mb-1">Luis Felipe Herrera Q.</h5>
+                    <p class="text-primary small fw-bold">Director de Investigación / Counselor</p>
+                    <p class="card-text small text-muted">Docente Guía. Experto en Sistemas Embebidos.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 border-0 shadow-sm bg-light text-center">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                    <i class="bi bi-person-plus d-block mb-3" style="font-size: 3rem; color: #ccc;"></i>
+                    <h5 class="fw-bold text-muted mb-1">Tu Nombre Aquí</h5>
+                    <p class="card-text small text-muted">¿Eres estudiante Unipiloto? ¡Únete!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center pt-4 border-top">
+        <a href="{% url 'home' %}" class="btn btn-outline-dark">← Volver al Semillero</a>
+    </div>
+</div>
+{% endblock %}
+
