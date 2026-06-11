@@ -1,32 +1,43 @@
-{% extends 'core/base.html' %}
-{% block content %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-9">
-            <div class="mb-4 text-center">
-                <strong class="text-danger text-uppercase">Bitácora de Evento</strong>
-                <h1 class="display-4 fw-bold">{{ post.titulo }}</h1>
-                <p class="text-muted">
-                    <i class="bi bi-calendar3"></i> 
-                    {% if post.fecha_fin %}
-                        Del {{ post.fecha_inicio|date:"d" }} al {{ post.fecha_fin|date:"d \d\e F, Y" }}
-                    {% else %}
-                        {{ post.fecha_inicio|date:"d \d\e F, Y" }}
-                    {% endif %}
-                </p>
+<div id="carousel{{ post.id }}" class="carousel slide mb-5" data-bs-ride="carousel">
+
+    <div class="carousel-inner">
+
+        {% if post.imagen %}
+            <div class="carousel-item active">
+                <img src="{{ post.imagen.url }}"
+                     class="d-block w-100 rounded"
+                     style="height:500px; object-fit:cover;"
+                     alt="{{ post.titulo }}">
             </div>
+        {% endif %}
 
-            {% if post.imagen %}
-                <img src="{{ post.imagen.url }}" class="img-fluid w-100 shadow rounded mb-5" alt="{{ post.titulo }}">
-            {% endif %}
-
-            <div class="lh-lg fs-5" style="white-space: pre-wrap;">
-                {{ post.contenido }}
+        {% for img in post.imagenes.all %}
+            <div class="carousel-item {% if not post.imagen and forloop.first %}active{% endif %}">
+                <img src="{{ img.imagen.url }}"
+                     class="d-block w-100 rounded"
+                     style="height:500px; object-fit:cover;"
+                     alt="{{ post.titulo }}">
             </div>
+        {% endfor %}
 
-            <hr class="my-5">
-            <a href="{% url 'home' %}" class="btn btn-outline-dark">← Volver al inicio</a>
-        </div>
     </div>
+
+    {% if post.imagen or post.imagenes.all %}
+
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carousel{{ post.id }}"
+                data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#carousel{{ post.id }}"
+                data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+    {% endif %}
+
 </div>
-{% endblock %}
