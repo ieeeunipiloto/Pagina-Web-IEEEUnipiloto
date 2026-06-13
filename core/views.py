@@ -18,3 +18,6 @@ def detalle_proyecto(request, pk):
 def detalle_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'core/detalle_post.html', {'post': post})
+    
+def informacion_ieee(request):
+    return render(request, 'core/ieee.html')
