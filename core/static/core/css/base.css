@@ -1,0 +1,61 @@
+ /*Header y Footer*/
+ :root {
+    --rojo-lab: #dc3545;
+    --negro-deep: #000000; /*Header, Footer, Textos, Titulos*/
+    --blanco: #ffffff;
+    --Azul: #030d38;  /*FONDO*/
+}
+/*fondo */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--Azul);
+    color: var(--negro-deep);
+}
+
+
+/* Navbar estilo institucional cosa de arriba inicioi*/
+.navbar {
+    background-color: var(--negro-deep) !important;
+    border-bottom: 4px solid var(--rojo-lab);
+}
+/* titulo Header*/
+.navbar-brand {
+    font-weight: bold;
+    color: var(--blanco) !important;
+}
+/* opcines Header*/
+.nav-link {
+    color: var(--blanco) !important;
+}
+/* opcines  Header cuando se pasa el mouse*/
+.nav-link:hover {
+    color: var(--rojo-lab) !important;
+}
+
+.logo-navbar {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+footer {
+    background-color: var(--negro-deep);
+    color: var(--blanco);
+    padding: 30px 0;
+    margin-top: 50px;
+    border-top: 5px solid var(--rojo-lab);
+}
+
+/*Titulo pixelado*/
+.pixel-title {
+    font-family: 'Bungee Shade', cursive;
+    font-size: 5rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: white;
+
+    text-shadow:
+        2px 2px 0 rgba(0,0,0,.3),
+        4px 4px 0 rgba(0,0,0,.2);
+}
+

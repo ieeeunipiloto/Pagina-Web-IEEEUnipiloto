@@ -1,0 +1,13 @@
+.label-bitacora {
+    letter-spacing: 1px;
+}
+
+.carousel-img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.contenido-post {
+    white-space: pre-wrap;
+    text-align: justify;
+}

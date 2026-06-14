@@ -1,36 +1,64 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
 {% block content %}
+<link rel="stylesheet" href="{% static 'core/css/detalle_proyecto.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/home.css' %}"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-8">
-            <h1 class="display-4 fw-bold text-primary">{{ proyecto.nombre }}</h1>
-            <hr class="border-primary border-3 w-25">
-            
-            <h3 class="mt-4">Documentación Técnica</h3>
-            <div class="p-4 bg-light border-start border-5 border-danger shadow-sm">
-                <p style="white-space: pre-wrap;">{{ proyecto.documentacion }}</p>
+        <div class="col-12">
+            <div style="border-left: 5px solid #0891b2; padding-left: 16px; margin-bottom: 24px;">
+                <span style="background: transparent; border: 1.5px solid #0891b2; color: #0891b2; border-radius: 999px; padding: 3px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;">
+                    <i class="ti ti-circuit-board"></i> Proyecto
+                </span>
+                <h1 style="font-size: 2.4rem; font-weight: 800; color: #fff; margin-top: 10px; line-height: 1.25;">
+                    {{ proyecto.nombre }}
+                </h1>
             </div>
-            
+            <hr class="border-primary border-3 w-25 mb-5">
+        </div>
+    </div>
+
+    <div class="row d-flex flex-wrap flex-md-nowrap align-items-start gap-4">
+        
+        <div class="col-12 col-md-7">
+            <h3 class="text-white mb-3">Documentación Técnica</h3>
+            <div class="p-4 bg-light border-start border-5 border-danger shadow-sm h-100">
+                <p class="documentacion-tecnica mb-0" style="color: #333; text-align: justify;">
+                    {{ proyecto.documentacion }}
+                </p>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 d-flex flex-column gap-3 mt-md-5">
+            {% if proyecto.imagen %}
+            <div class="text-center text-md-start">
+                <img src="{{ proyecto.imagen.url }}"
+                     class="img-fluid shadow-lg rounded"
+                     alt="{{ proyecto.nombre }}"
+                     style="width: 400%; max-width: 400px; height: 400px; object-fit: cover; display: inline-block;">
+            </div>
+            {% endif %}
+
+            <div class="d-flex align-items-center gap-2 mt-2" style="background: #cccccc; border: 2px solid #4b5659; color: #000; border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 500; width: fit-content;">
+                <i class="ti ti-calendar-check" style="font-size: 20px;"></i>
+                <span><strong>Fecha de inicio:</strong> {{ proyecto.fecha_inicio }}</span>
+            </div>
+
             {% if proyecto.enlace_repositorio %}
-            <div class="mt-4">
-                <a href="{{ proyecto.enlace_repositorio }}" target="_blank" class="btn btn-dark btn-lg">
-                    <i class="bi bi-github"></i> Ver Repositorio (GitHub/GitLab)
+            <div class="mt-2 w-100" style="max-width: 300px;">
+                <a href="{{ proyecto.enlace_repositorio }}" target="_blank" class="btn nav-btn Git text-center w-100">
+                    <i class="ti ti-brand-git"></i> Ver Repositorio (GitHub/GitLab)
                 </a>
             </div>
             {% endif %}
         </div>
-        
-        <div class="col-md-4">
-            {% if proyecto.imagen %}
-            <img src="{{ proyecto.imagen.url }}" class="img-fluid shadow-lg" alt="{{ proyecto.nombre }}">
-            {% endif %}
-            <div class="mt-3 p-3 bg-dark text-white text-center">
-                <small>Fecha de inicio: {{ proyecto.fecha_inicio }}</small>
-            </div>
-        </div>
-    </div>
-    <div class="mt-5">
-        <a href="{% url 'home' %}" class="btn btn-outline-secondary">← Volver al Inicio</a>
+    </div> <div class="text-center mt-5 pt-4 mb-5">
+        <a href="{% url 'home' %}#laboratorio" class="btn nav-btn lab text-center">
+            <i class="ti ti-flask"></i> Laboratorio
+        </a>
     </div>
 </div>
+
 {% endblock %}
