@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================
+   VARIABLES GLOBALES
+   ================================ */
+
+:root {
+  --rojo-lab: #dc3545;
+  --negro-deep: #000000;
+  --blanco: #ffffff;
+  --azul-fondo: #030d38;
+  --cyber-blue: #00d4ff;
+  --cyber-red: #ff3b3b;
+}
+
+/* ================================
+   ESTILOS BASE
+   ================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--azul-fondo);
+  color: var(--blanco);
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ================================
+   TÍTULO PIXELADO
+   ================================ */
+
+.pixel-title {
+  font-family: 'Bungee Shade', cursive;
+  font-size: clamp(2rem, 5vw, 5rem);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: white;
+  text-shadow:
+    2px 2px 0 rgba(0, 0, 0, 0.3),
+    4px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ================================
+   SECTION TITLE
+   ================================ */
+
+.section-title {
+  border-left: 6px solid var(--cyber-blue);
+  padding-left: 15px;
+  color: var(--blanco);
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+/* ================================
+   ANIMACIONES PERSONALIZADAS
+   ================================ */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ================================
+   CARD HOVER EFFECTS
+   ================================ */
+
+.card-dynamic {
+  @apply rounded-2xl transition-all duration-300 ease-out overflow-hidden;
+}
+
+.card-dynamic:hover {
+  @apply transform -translate-y-2 shadow-2xl;
+}
+
+/* ================================
+   BUTTON STYLES
+   ================================ */
+
+.btn-cyber {
+  @apply inline-flex items-center gap-3 rounded-full px-6 py-3 text-sm font-medium;
+  @apply cursor-pointer transition-all duration-200;
+  @apply border-2;
+}
+
+.btn-cyber:hover {
+  @apply transform -translate-y-1;
+}
+
+.btn-cyber:active {
+  @apply scale-95;
+}
+
+.btn-cyber i {
+  @apply text-base transition-transform duration-200;
+}
+
+/* Variantes de botones */
+.btn-ieee {
+  @apply border-cyan-600 text-cyan-600 bg-transparent;
+}
+
+.btn-ieee:hover {
+  @apply bg-cyan-600 text-white;
+}
+
+.btn-ieee:hover i {
+  @apply rotate-[-10deg] scale-110;
+}
+
+.btn-lab {
+  @apply border-orange-500 text-orange-500 bg-transparent;
+}
+
+.btn-lab:hover {
+  @apply bg-orange-500 text-white;
+}
+
+.btn-lab:hover i {
+  @apply translate-x-1;
+}
+
+.btn-blog {
+  @apply border-green-600 text-green-600 bg-transparent;
+}
+
+.btn-blog:hover {
+  @apply bg-green-600 text-white;
+}
+
+.btn-blog:hover i {
+  @apply -translate-y-1;
+}
+
+.btn-contact {
+  @apply border-pink-600 text-pink-600 bg-transparent;
+}
+
+.btn-contact:hover {
+  @apply bg-pink-600 text-white;
+}
+
+.btn-contact:hover i {
+  @apply rotate-[15deg] scale-110;
+}
+
+/* ================================
+   LOADING SKELETON
+   ================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  @apply bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200;
+  background-size: 2000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* ================================
+   SCROLLBAR PERSONALIZADO
+   ================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--negro-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cyber-blue);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyber-red);
+}
+
+/* ================================
+   RESPONSIVE UTILITIES
+   ================================ */
+
+@media (max-width: 768px) {
+  .pixel-title {
+    font-size: 2rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+}

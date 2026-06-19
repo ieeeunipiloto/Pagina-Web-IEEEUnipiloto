@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// PROYECTOS DE LABORATORIO
+// ================================
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  shortDesc   String   @map("short_desc")
+  documentation String @db.Text
+  mainImage   String?  @map("main_image")
+  startDate   DateTime @default(now()) @map("start_date")
+  repoUrl     String?  @map("repo_url")
+  
+  images      ProjectImage[]
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  @@map("projects")
+  @@index([startDate])
+}
+
+model ProjectImage {
+  id        String  @id @default(uuid())
+  projectId String  @map("project_id")
+  imageUrl  String  @map("image_url")
+  
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("project_images")
+  @@index([projectId])
+}
+
+// ================================
+// EVENTOS Y BLOG
+// ================================
+
+model Post {
+  id         String    @id @default(uuid())
+  title      String
+  content    String    @db.Text
+  startDate  DateTime  @default(now()) @map("start_date")
+  endDate    DateTime? @map("end_date")
+  mainImage  String?   @map("main_image")
+  eventLink  String?   @map("event_link")
+  
+  images     PostImage[]
+  
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  
+  @@map("posts")
+  @@index([startDate])
+}
+
+model PostImage {
+  id        String @id @default(uuid())
+  postId    String @map("post_id")
+  imageUrl  String @map("image_url")
+  
+  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  @@map("post_images")
+  @@index([postId])
+}
