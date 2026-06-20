@@ -6,13 +6,15 @@ import { Project } from '@/types';
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
 
-  const { data: project, isLoading, error } = useQuery<Project>({
+  const { data: project, isPending, isError, error } = useQuery<Project>({
     queryKey: ['project', id],
     queryFn: () => api.getProjectById(id!),
     enabled: !!id,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
   });
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
         <div className="text-white text-xl">Cargando proyecto...</div>
@@ -20,11 +22,17 @@ export default function ProjectDetail() {
     );
   }
 
-  if (error || !project) {
+  if (isError || !project) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : 'No se pudo cargar el proyecto. Verifica que el backend esté corriendo.';
+
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-xl mb-4">Proyecto no encontrado</p>
+        <div className="text-center max-w-md">
+          <p className="text-red-400 text-xl mb-2">Error al cargar proyecto</p>
+          <p className="text-gray-400 text-sm mb-6">{errorMessage}</p>
           <Link to="/" className="btn-cyber btn-lab">
             <i className="ti ti-arrow-left"></i>
             Volver al inicio

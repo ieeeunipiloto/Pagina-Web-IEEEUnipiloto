@@ -51,7 +51,7 @@ app.use(cors({
     : envConfig.corsOrigin.split(','),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-correlation-id'],
+  allowedHeaders: ['Content-Type', 'x-correlation-id'],
 }));
 
 // Compresión de respuestas

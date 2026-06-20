@@ -26,12 +26,22 @@ class ApiClient {
     this.setupInterceptors();
   }
 
+  private generateUUID(): string {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
   private setupInterceptors(): void {
     // Request interceptor
     this.client.interceptors.request.use(
       (config) => {
-        // Agregar correlation ID
-        config.headers['x-correlation-id'] = crypto.randomUUID();
+        config.headers['x-correlation-id'] = this.generateUUID();
         return config;
       },
       (error) => Promise.reject(error)

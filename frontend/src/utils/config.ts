@@ -3,7 +3,7 @@
  */
 
 export const config = {
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+  apiUrl: import.meta.env.VITE_API_URL || '/api',
   appName: import.meta.env.VITE_APP_NAME || 'Semillero IOT E ITSS',
   enableDevtools: import.meta.env.VITE_ENABLE_DEVTOOLS === 'true',
 } as const;

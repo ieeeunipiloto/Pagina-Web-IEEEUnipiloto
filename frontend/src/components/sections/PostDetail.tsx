@@ -6,13 +6,15 @@ import { Post } from '@/types';
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
 
-  const { data: post, isLoading, error } = useQuery<Post>({
+  const { data: post, isPending, isError, error } = useQuery<Post>({
     queryKey: ['post', id],
     queryFn: () => api.getPostById(id!),
     enabled: !!id,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
   });
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
         <div className="text-white text-xl">Cargando publicación...</div>
@@ -20,11 +22,17 @@ export default function PostDetail() {
     );
   }
 
-  if (error || !post) {
+  if (isError || !post) {
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : 'No se pudo cargar la publicación. Verifica que el backend esté corriendo.';
+
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white text-xl mb-4">Publicación no encontrada</p>
+        <div className="text-center max-w-md">
+          <p className="text-red-400 text-xl mb-2">Error al cargar publicación</p>
+          <p className="text-gray-400 text-sm mb-6">{errorMessage}</p>
           <Link to="/" className="btn-cyber btn-blog">
             <i className="ti ti-arrow-left"></i>
             Volver al inicio

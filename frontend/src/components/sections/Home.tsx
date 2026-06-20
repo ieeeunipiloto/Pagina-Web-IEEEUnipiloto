@@ -8,13 +8,23 @@ import { motion } from 'framer-motion';
 
 export default function Home() {
   // Obtener proyectos
-  const { data: projects, isLoading: projectsLoading } = useQuery<Project[]>({
+  const {
+    data: projects,
+    isPending: projectsLoading,
+    isError: projectsError,
+    error: projectsErrorObj,
+  } = useQuery<Project[]>({
     queryKey: ['projects'],
     queryFn: () => api.getProjects(),
   });
 
   // Obtener posts
-  const { data: posts, isLoading: postsLoading } = useQuery<Post[]>({
+  const {
+    data: posts,
+    isPending: postsLoading,
+    isError: postsError,
+    error: postsErrorObj,
+  } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: () => api.getPosts(),
   });
@@ -120,6 +130,16 @@ export default function Home() {
               <div key={i} className="skeleton h-64 rounded-lg"></div>
             ))}
           </div>
+        ) : projectsError ? (
+          <div className="text-center py-12 bg-red-50 rounded-lg">
+            <p className="text-red-600 text-lg mb-2">Error al cargar proyectos</p>
+            <p className="text-red-400 text-sm">
+              No se pudo conectar con el servidor. Verifica que el backend esté corriendo.
+            </p>
+            <p className="text-red-300 text-xs mt-2">
+              {projectsErrorObj instanceof Error ? projectsErrorObj.message : 'Error de conexión'}
+            </p>
+          </div>
         ) : projects && projects.length > 0 ? (
           <div className="grid md:grid-cols-3 gap-6">
             {projects.map((project) => (
@@ -166,6 +186,11 @@ export default function Home() {
             {[1, 2].map((i) => (
               <div key={i} className="skeleton h-48 rounded-lg"></div>
             ))}
+          </div>
+        ) : postsError ? (
+          <div className="text-center py-12 bg-red-50 rounded-lg">
+            <p className="text-red-600 text-lg mb-2">Error al cargar eventos</p>
+            <p className="text-red-400 text-sm">No se pudo conectar con el servidor.</p>
           </div>
         ) : posts && posts.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-6">

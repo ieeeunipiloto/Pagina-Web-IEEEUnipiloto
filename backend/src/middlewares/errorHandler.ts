@@ -33,19 +33,7 @@ export class NotFoundError extends AppError {
   }
 }
 
-export class UnauthorizedError extends AppError {
-  constructor(message = 'No autorizado') {
-    super(401, message);
-    Object.setPrototypeOf(this, UnauthorizedError.prototype);
-  }
-}
 
-export class ForbiddenError extends AppError {
-  constructor(message = 'Acceso denegado') {
-    super(403, message);
-    Object.setPrototypeOf(this, ForbiddenError.prototype);
-  }
-}
 
 /**
  * Middleware global de manejo de errores

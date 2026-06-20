@@ -1,13 +1,31 @@
+import { execSync } from 'child_process';
 import app from './app';
 import { envConfig } from './config/environment';
 import { logger } from './config/logger';
 import { prisma } from './config/database';
 
 /**
+ * Sincroniza el schema de Prisma con la base de datos
+ * Solo crea/actualiza tablas sin eliminar datos existentes
+ */
+const syncDatabase = (): void => {
+  try {
+    logger.info('🔄 Sincronizando schema de base de datos...');
+    execSync('npx prisma db push --skip-generate', { stdio: 'pipe' });
+    logger.info('✅ Schema de base de datos sincronizado');
+  } catch (error) {
+    logger.warn('⚠️  No se pudo sincronizar el schema, puede que ya esté actualizado');
+  }
+};
+
+/**
  * Inicialización del servidor con manejo de errores y señales
  */
 const startServer = async (): Promise<void> => {
   try {
+    // Sincronizar base de datos con el schema de Prisma
+    syncDatabase();
+
     // Verificar conexión a base de datos
     await prisma.$connect();
     logger.info('✅ Conexión a base de datos establecida');

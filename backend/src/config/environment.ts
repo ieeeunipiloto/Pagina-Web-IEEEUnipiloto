@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
-// Cargar variables de entorno
-dotenv.config();
+// Cargar variables de entorno desde .env.example
+dotenv.config({ path: '.env' });
 
 /**
  * Schema de validación para variables de entorno
@@ -14,13 +14,6 @@ const envSchema = z.object({
   
   DATABASE_URL: z.string().url('DATABASE_URL debe ser una URL válida'),
   
-  JWT_SECRET: z.string()
-    .min(32, 'JWT_SECRET debe tener al menos 32 caracteres')
-    .refine(
-      (val) => !val.includes('PLACEHOLDER'),
-      'JWT_SECRET debe ser reemplazado por un secret corporativo válido'
-    ),
-  JWT_EXPIRATION: z.string().default('7d'),
   
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   
@@ -75,9 +68,6 @@ export const envConfig = {
   // Database
   databaseUrl: env.DATABASE_URL,
   
-  // JWT
-  jwtSecret: env.JWT_SECRET,
-  jwtExpiration: env.JWT_EXPIRATION,
   
   // CORS
   corsOrigin: env.CORS_ORIGIN,

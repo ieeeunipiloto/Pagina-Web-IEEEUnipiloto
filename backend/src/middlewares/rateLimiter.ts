@@ -34,24 +34,3 @@ export const rateLimiter = rateLimit({
   },
 });
 
-/**
- * Rate limiter estricto para endpoints sensibles (autenticación, registro, etc.)
- */
-export const strictRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // 5 intentos
-  message: {
-    error: 'Demasiados intentos. Por favor intenta nuevamente en 15 minutos.',
-  },
-  handler: (req, res) => {
-    logger.warn('Strict rate limit exceeded', {
-      ip: req.ip,
-      path: req.path,
-      correlationId: req.correlationId,
-    });
-
-    res.status(429).json({
-      error: 'Demasiados intentos. Por favor intenta nuevamente en 15 minutos.',
-    });
-  },
-});

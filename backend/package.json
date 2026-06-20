@@ -36,8 +36,7 @@
     "winston": "^3.11.0",
     "morgan": "^1.10.0",
     "express-rate-limit": "^7.1.5",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
+
     "prisma": "^5.9.1",
     "@prisma/client": "^5.9.1",
     "uuid": "^9.0.1",
@@ -49,8 +48,7 @@
     "@types/cors": "^2.8.17",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.16",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/bcryptjs": "^2.4.6",
+
     "@types/compression": "^1.7.5",
     "@types/jest": "^29.5.12",
     "@types/supertest": "^6.0.2",
