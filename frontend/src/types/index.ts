@@ -62,3 +62,16 @@ export interface ApiError {
   details?: Array<{ field: string; message: string }>;
   correlationId?: string;
 }
+
+export interface ContactPayload {
+  email: string;
+  message: string;
+}
+
+export interface UploadResult {
+  url: string;
+  filename: string;
+  originalName: string;
+  size: number;
+  mimetype: string;
+}

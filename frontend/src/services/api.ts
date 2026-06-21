@@ -3,9 +3,13 @@ import { config } from '@/utils/config';
 import { 
   Project, 
   Post, 
+  ContactPayload,
+  UploadResult,
   ApiListResponse, 
   ApiResponse, 
-  ApiError 
+  ApiError,
+  ProjectImage,
+  PostImage,
 } from '@/types';
 
 /**
@@ -119,6 +123,51 @@ class ApiClient {
 
   async deletePost(id: string): Promise<void> {
     await this.client.delete(`/posts/${id}`);
+  }
+
+  /**
+   * Contacto
+   */
+  async sendContact(payload: ContactPayload): Promise<ApiResponse<null>> {
+    const { data } = await this.client.post<ApiResponse<null>>('/contact', payload);
+    return data;
+  }
+
+  /**
+   * Subir archivo (imagen)
+   */
+  async uploadImage(file: File): Promise<UploadResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const { data } = await this.client.post<ApiResponse<UploadResult>>('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  }
+
+  /**
+   * Imágenes de proyectos
+   */
+  async addProjectImage(projectId: string, imageUrl: string): Promise<ProjectImage> {
+    const { data } = await this.client.post<ApiResponse<ProjectImage>>(`/projects/${projectId}/images`, { imageUrl });
+    return data.data;
+  }
+
+  async deleteProjectImage(imageId: string): Promise<void> {
+    await this.client.delete(`/projects/images/${imageId}`);
+  }
+
+  /**
+   * Imágenes de posts
+   */
+  async addPostImage(postId: string, imageUrl: string): Promise<PostImage> {
+    const { data } = await this.client.post<ApiResponse<PostImage>>(`/posts/${postId}/images`, { imageUrl });
+    return data.data;
+  }
+
+  async deletePostImage(imageId: string): Promise<void> {
+    await this.client.delete(`/posts/images/${imageId}`);
   }
 }
 

@@ -2,8 +2,7 @@ import { Suspense, Component, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import SmartCityScene from './SmartCityScene';
-import { institucionalInfo } from '@/utils/config';
-
+import beeImg from '@/assets/Abeja_Camiseta.png';
 /**
  * Error Boundary simple para manejar errores de WebGL
  */
@@ -78,9 +77,12 @@ export default function Hero() {
             className="mb-8 flex justify-center"
           >
             <div className="w-48 h-48 relative animate-float">
-              {/* Aquí iría la imagen de la abeja/mascota */}
-              <div className="w-full h-full bg-yellow-400 rounded-full flex items-center justify-center text-6xl shadow-2xl">
-                🐝
+              <div className="w-full h-full bg-white rounded-full flex items-center justify-center p-3 shadow-2xl">
+                <img
+                  src={beeImg}
+                  alt="Abeja Mascota"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/30 rounded-full blur-md" />
             </div>

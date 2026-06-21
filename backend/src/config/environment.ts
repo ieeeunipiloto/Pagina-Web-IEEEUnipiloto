@@ -32,6 +32,12 @@ const envSchema = z.object({
   CORRELATION_ID_HEADER: z.string().default('x-correlation-id'),
   
   MAINTENANCE_MODE: z.string().transform((v) => v === 'true').default('false'),
+
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.string().transform(Number).default('587'),
+  SMTP_USER: z.string().default(''),
+  SMTP_PASS: z.string().default(''),
+  CONTACT_EMAIL: z.string().email().default('ramaieee@unipiloto.edu.co'),
 });
 
 /**
@@ -94,6 +100,13 @@ export const envConfig = {
   
   // Mantenimiento
   maintenanceMode: env.MAINTENANCE_MODE,
+
+  // SMTP / Email
+  smtpHost: env.SMTP_HOST,
+  smtpPort: env.SMTP_PORT,
+  smtpUser: env.SMTP_USER,
+  smtpPass: env.SMTP_PASS,
+  contactEmail: env.CONTACT_EMAIL,
 } as const;
 
 // Tipo inferido de la configuración

@@ -79,6 +79,25 @@ export const errorHandler = (
     return;
   }
 
+  // Errores de Multer (subida de archivos)
+  if (err.name === 'MulterError') {
+    const multerErr = err as unknown as { code: string; field?: string; message: string };
+    res.status(400).json({
+      error: multerErr.message,
+      correlationId: req.correlationId,
+    });
+    return;
+  }
+
+  // Errores de archivo no permitido (lanzados por fileFilter)
+  if (err.message?.includes('Tipo de archivo no permitido')) {
+    res.status(400).json({
+      error: err.message,
+      correlationId: req.correlationId,
+    });
+    return;
+  }
+
   // Errores de Prisma (base de datos)
   if (err.name === 'PrismaClientKnownRequestError') {
     res.status(400).json({

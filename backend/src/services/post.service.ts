@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { prisma } from '../config/database';
 import { NotFoundError } from '../middlewares/errorHandler';
 import { CreatePostInput, UpdatePostInput } from '../types/post.schema';
@@ -100,7 +102,15 @@ export class PostService {
     logger.info('Eliminando post', { postId: id });
     
     // Verificar que el post existe
-    await this.getPostById(id);
+    const post = await this.getPostById(id);
+
+    // Eliminar archivos locales de las imágenes
+    for (const img of post.images) {
+      this.deleteLocalFile(img.imageUrl);
+    }
+    if (post.mainImage) {
+      this.deleteLocalFile(post.mainImage);
+    }
 
     await prisma.post.delete({
       where: { id },
@@ -140,11 +150,27 @@ export class PostService {
       throw new NotFoundError('Imagen');
     }
 
+    this.deleteLocalFile(image.imageUrl);
+
     await prisma.postImage.delete({
       where: { id: imageId },
     });
 
     return { message: 'Imagen eliminada exitosamente' };
+  }
+
+  private deleteLocalFile(imageUrl: string): void {
+    try {
+      if (imageUrl.startsWith('/uploads/')) {
+        const filePath = path.resolve(__dirname, '../../uploads', path.basename(imageUrl));
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          logger.info('Archivo local eliminado', { path: filePath });
+        }
+      }
+    } catch (err) {
+      logger.warn('No se pudo eliminar el archivo local', { imageUrl, error: err });
+    }
   }
 }
 

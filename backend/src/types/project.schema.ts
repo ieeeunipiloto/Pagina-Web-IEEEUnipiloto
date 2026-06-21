@@ -1,5 +1,17 @@
 import { z } from 'zod';
 
+const imageUrlOrLocal = z.string().refine(
+  (val) => {
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return val.startsWith('/uploads/');
+    }
+  },
+  { message: 'Debe ser una URL válida o una ruta local /uploads/...' },
+);
+
 /**
  * Schemas de validación para Proyectos
  */
@@ -16,9 +28,7 @@ export const createProjectSchema = z.object({
   documentation: z.string()
     .min(50, 'La documentación debe tener al menos 50 caracteres'),
   
-  mainImage: z.string()
-    .url('La imagen principal debe ser una URL válida')
-    .optional(),
+  mainImage: imageUrlOrLocal.optional(),
   
   startDate: z.string()
     .datetime('Fecha de inicio inválida')
@@ -45,10 +55,7 @@ export const updateProjectSchema = z.object({
     .min(50, 'La documentación debe tener al menos 50 caracteres')
     .optional(),
   
-  mainImage: z.string()
-    .url('La imagen principal debe ser una URL válida')
-    .optional()
-    .nullable(),
+  mainImage: imageUrlOrLocal.optional().nullable(),
   
   startDate: z.string()
     .datetime('Fecha de inicio inválida')

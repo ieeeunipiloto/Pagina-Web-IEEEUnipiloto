@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '@/services/api';
 import { Project } from '@/types';
+import { getImageUrl } from '@/utils/config';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
@@ -53,7 +54,7 @@ export default function ProjectDetail() {
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
           {project.mainImage && (
             <img
-              src={project.mainImage}
+              src={getImageUrl(project.mainImage)}
               alt={project.name}
               className="w-full h-96 object-cover"
             />
@@ -100,7 +101,7 @@ export default function ProjectDetail() {
                   {project.images.map((image) => (
                     <img
                       key={image.id}
-                      src={image.imageUrl}
+                      src={getImageUrl(image.imageUrl)}
                       alt={`${project.name} - imagen`}
                       className="w-full h-64 object-cover rounded-lg shadow-md"
                     />

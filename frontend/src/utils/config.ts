@@ -4,9 +4,27 @@
 
 export const config = {
   apiUrl: import.meta.env.VITE_API_URL || '/api',
+  backendUrl: import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000',
   appName: import.meta.env.VITE_APP_NAME || 'Semillero IOT E ITSS',
   enableDevtools: import.meta.env.VITE_ENABLE_DEVTOOLS === 'true',
 } as const;
+
+export function getImageUrl(path: string | null | undefined): string | undefined {
+  if (!path) return undefined;
+
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+
+  if (normalized.startsWith('/uploads/')) {
+    return `${config.backendUrl}${normalized}`;
+  }
+
+  try {
+    new URL(normalized);
+    return normalized;
+  } catch {
+    return `${config.backendUrl}${normalized}`;
+  }
+}
 
 /**
  * Información institucional

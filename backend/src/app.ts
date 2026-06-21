@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
+import path from 'path';
 import 'express-async-errors';
 
 import { envConfig } from './config/environment';
@@ -16,6 +17,8 @@ import { logger } from './config/logger';
 import projectRoutes from './routes/project.routes';
 import postRoutes from './routes/post.routes';
 import healthRoutes from './routes/health.routes';
+import contactRoutes from './routes/contact.routes';
+import uploadRoutes from './routes/upload.routes';
 
 const app: Application = express();
 
@@ -56,6 +59,9 @@ app.use(cors({
 
 // Compresión de respuestas
 app.use(compression());
+
+// Servir archivos estáticos (uploads)
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Parsing de JSON con límite de tamaño
 app.use(express.json({ limit: '10mb' }));
@@ -98,6 +104,8 @@ app.use('/ready', healthRoutes);
 // Rutas de recursos
 app.use('/api/projects', projectRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api', contactRoutes);
+app.use('/api', uploadRoutes);
 
 // ============================================
 // MANEJO DE ERRORES

@@ -35,7 +35,7 @@ export default function Footer() {
               <i className="ti ti-brand-github text-2xl"></i>
             </a>
             <a 
-              href="mailto:semillero@unipiloto.edu.co"
+              href="mailto:ramaieee@unipiloto.edu.co"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="Email"
             >

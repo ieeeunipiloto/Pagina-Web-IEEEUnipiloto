@@ -16,7 +16,6 @@ export default defineConfig({
     strictPort: false,
     cors: true,
     // Desactivar verificación de host
-    origin: 'http://0.0.0.0:5173',
     hmr: {
       clientPort: 443,
       protocol: 'wss',
@@ -24,6 +23,11 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/uploads': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,

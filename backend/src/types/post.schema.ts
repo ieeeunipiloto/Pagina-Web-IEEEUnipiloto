@@ -1,5 +1,17 @@
 import { z } from 'zod';
 
+const imageUrlOrLocal = z.string().refine(
+  (val) => {
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return val.startsWith('/uploads/');
+    }
+  },
+  { message: 'Debe ser una URL válida o una ruta local /uploads/...' },
+);
+
 /**
  * Schemas de validación para Posts (Eventos/Blog)
  */
@@ -23,9 +35,7 @@ export const createPostSchema = z.object({
     .optional()
     .nullable(),
   
-  mainImage: z.string()
-    .url('La imagen principal debe ser una URL válida')
-    .optional(),
+  mainImage: imageUrlOrLocal.optional(),
   
   eventLink: z.string()
     .url('El enlace del evento debe ser válido')
@@ -65,10 +75,7 @@ export const updatePostSchema = z.object({
     .optional()
     .nullable(),
   
-  mainImage: z.string()
-    .url('La imagen principal debe ser una URL válida')
-    .optional()
-    .nullable(),
+  mainImage: imageUrlOrLocal.optional().nullable(),
   
   eventLink: z.string()
     .url('El enlace del evento debe ser válido')

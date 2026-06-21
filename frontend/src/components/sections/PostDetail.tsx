@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '@/services/api';
 import { Post } from '@/types';
+import { getImageUrl } from '@/utils/config';
 
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
@@ -53,7 +54,7 @@ export default function PostDetail() {
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
           {post.mainImage && (
             <img
-              src={post.mainImage}
+              src={getImageUrl(post.mainImage)}
               alt={post.title}
               className="w-full h-96 object-cover"
             />
@@ -121,7 +122,7 @@ export default function PostDetail() {
                   {post.images.map((image) => (
                     <img
                       key={image.id}
-                      src={image.imageUrl}
+                      src={getImageUrl(image.imageUrl)}
                       alt={`${post.title} - imagen`}
                       className="w-full h-64 object-cover rounded-lg shadow-md"
                     />
