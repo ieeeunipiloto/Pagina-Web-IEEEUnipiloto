@@ -1,1 +1,0 @@
-gunicorn semillero_IOT.wsgi:application
