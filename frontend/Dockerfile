@@ -1,3 +1,12 @@
+# frontend/Dockerfile — Build multi-etapa para el frontend React.
+#
+# Etapas:
+#   build - Compila la app con Vite usando Node.js 20 Alpine.
+#   nginx - Sirve los archivos estáticos generados usando Nginx Alpine.
+#            Configura el fallback a index.html para el enrutamiento SPA.
+#
+# Puerto expuesto: 80.
+
 FROM node:20-alpine AS build
 
 WORKDIR /app

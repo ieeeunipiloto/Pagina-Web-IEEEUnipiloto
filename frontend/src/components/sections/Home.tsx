@@ -1,14 +1,47 @@
+/**
+ * Home.tsx — Página principal (landing page) del semillero.
+ *
+ * Componente de página que compone y organiza todas las secciones:
+ * 1. Hero: encabezado con escena 3D y llamado a la acción.
+ * 2. Institucional: misión, visión, información del semillero.
+ * 3. Laboratorio: grilla de proyectos con fetch vía React Query.
+ * 4. Eventos: lista de eventos próximos.
+ * 5. Bitácoras: calendario del mes + últimas bitácoras.
+ * 6. Contacto: formulario de contacto con envío por email.
+ *
+ * Estados cubiertos por cada sección:
+ * - Loading: muestra skeletons animados mientras carga.
+ * - Error: muestra mensaje de error con detalles del backend.
+ * - Vacío: muestra texto informativo cuando no hay datos.
+ * - Datos: renderiza el contenido normalmente.
+ */
+
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import Hero from './Hero';
 import { api } from '@/services/api';
 import { Project, Post } from '@/types';
 import { institucionalInfo, getImageUrl } from '@/utils/config';
+import beeScientificImg from '@/assets/Abeja Científica.png';
+import beeEngineerImg from '@/assets/Abeja Ingeniera.png';
+import beePensiveImg from '@/assets/Abeja Pensativa Lápiz.png';
+import beeAwardImg from '@/assets/Abeja Premio 2.png';
+import beeHappyImg from '@/assets/Abeja_Feliz.png';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+/**
+ * Home — Página principal del sitio.
+ * Renderiza todas las secciones de la landing page.
+ *
+ * @returns {JSX.Element} Página principal completa
+ */
 export default function Home() {
-  // Obtener proyectos
+  // ──────────────────────────────────────────────
+  // PETICIONES A LA API
+  // ──────────────────────────────────────────────
+
+  /** Consulta: obtener todos los proyectos */
   const {
     data: projects,
     isPending: projectsLoading,
@@ -19,22 +52,25 @@ export default function Home() {
     queryFn: () => api.getProjects(),
   });
 
-  // Obtener posts
+  /** Consulta: obtener todos los posts (eventos + bitácoras) */
   const {
     data: posts,
     isPending: postsLoading,
     isError: postsError,
-    error: postsErrorObj,
   } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: () => api.getPosts(),
   });
 
+  // Separar posts por tipo según si tienen eventLink
   const events = posts?.filter((p) => p.eventLink) ?? [];
   const bitacoras = posts?.filter((p) => !p.eventLink) ?? [];
   const recentBitacoras = bitacoras.slice(0, 5);
 
-  // Calendario
+  // ──────────────────────────────────────────────
+  // LÓGICA DEL CALENDARIO
+  // ──────────────────────────────────────────────
+
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -53,14 +89,25 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* Sección Institucional */}
+      {/* ── SECCIÓN INSTITUCIONAL ── */}
       <section id="institucional" className="container mx-auto px-4 py-16">
-        <h2 className="section-title">
-          Sobre el {institucionalInfo.nombre}
-        </h2>
+        <div className="flex flex-col items-center text-center mb-12">
+          <img
+            src={beeScientificImg}
+            alt="Abeja Mascota del Semillero"
+            className="w-28 h-28 md:w-36 md:h-36 object-contain mb-4 drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]"
+          />
+          <h2 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            Conoce el Semillero IoT e ITSS
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-red rounded-full mt-3" />
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl">
+            Innovación, tecnología e investigación aplicada
+          </p>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* Misión */}
+          {/* Tarjeta de Misión */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -75,7 +122,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          {/* Visión */}
+          {/* Tarjeta de Visión */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -91,7 +138,7 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Información adicional */}
+        {/* Información adicional: sesiones, liderazgo, IEEE */}
         <div className="grid md:grid-cols-3 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -140,17 +187,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Proyectos de Laboratorio */}
+      {/* ── SECCIÓN PROYECTOS DE LABORATORIO ── */}
       <section id="laboratorio" className="container mx-auto px-4 py-16">
-        <h2 className="section-title">Proyectos de Laboratorio</h2>
+        <div className="flex flex-col items-center text-center mb-12">
+          <img
+            src={beeEngineerImg}
+            alt="Abeja Ingeniera del Semillero"
+            className="w-28 h-28 md:w-36 md:h-36 object-contain mb-4 drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]"
+          />
+          <h2 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            Proyectos de Laboratorio
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-red rounded-full mt-3" />
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl">
+            Explorando soluciones IoT, gemelos digitales y más
+          </p>
+        </div>
 
         {projectsLoading ? (
+          /* Estado de carga: skeletons animados */
           <div className="grid md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <div key={i} className="skeleton h-64 rounded-lg"></div>
             ))}
           </div>
         ) : projectsError ? (
+          /* Estado de error: mensaje descriptivo */
           <div className="text-center py-12 bg-red-50 rounded-lg">
             <p className="text-red-600 text-lg mb-2">Error al cargar proyectos</p>
             <p className="text-red-400 text-sm">
@@ -161,6 +223,7 @@ export default function Home() {
             </p>
           </div>
         ) : projects && projects.length > 0 ? (
+          /* Estado con datos: grilla de proyectos */
           <div className="grid md:grid-cols-3 gap-6">
             {projects.map((project) => (
               <motion.div
@@ -193,13 +256,27 @@ export default function Home() {
             ))}
           </div>
         ) : (
+          /* Estado vacío */
           <p className="text-center text-white">No hay proyectos registrados aún.</p>
         )}
       </section>
 
-      {/* Eventos */}
+      {/* ── SECCIÓN EVENTOS ── */}
       <section id="blog" className="container mx-auto px-4 py-16 border-t border-gray-700">
-        <h2 className="section-title">Eventos</h2>
+        <div className="flex flex-col items-center text-center mb-12">
+          <img
+            src={beePensiveImg}
+            alt="Abeja Pensativa del Semillero"
+            className="w-28 h-28 md:w-36 md:h-36 object-contain mb-4 drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]"
+          />
+          <h2 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            Eventos
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-red rounded-full mt-3" />
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl">
+            Próximas actividades, charlas y talleres
+          </p>
+        </div>
 
         {postsLoading ? (
           <div className="grid md:grid-cols-2 gap-6">
@@ -251,9 +328,22 @@ export default function Home() {
         )}
       </section>
 
-      {/* Bitácoras */}
+      {/* ── SECCIÓN BITÁCORAS ── */}
       <section id="bitacoras" className="container mx-auto px-4 py-16 border-t border-gray-700">
-        <h2 className="section-title">Bitácoras</h2>
+        <div className="flex flex-col items-center text-center mb-12">
+          <img
+            src={beeAwardImg}
+            alt="Abeja Premio del Semillero"
+            className="w-28 h-28 md:w-36 md:h-36 object-contain mb-4 drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]"
+          />
+          <h2 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            Bitácoras
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-red rounded-full mt-3" />
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl">
+            Registros y aprendizajes del semillero
+          </p>
+        </div>
 
         {postsLoading ? (
           <div className="flex justify-center">
@@ -266,7 +356,7 @@ export default function Home() {
           </div>
         ) : recentBitacoras.length > 0 ? (
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Calendario */}
+            {/* Calendario del mes actual */}
             <div className="bg-white rounded-lg shadow-lg p-4 h-fit">
               <div className="text-center font-bold text-xl text-primary-600 mb-4">
                 {monthNames[month]} {year}
@@ -298,7 +388,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Lista de bitácoras */}
+            {/* Lista de las últimas 5 bitácoras */}
             <div className="md:col-span-2 flex flex-col gap-1.5">
               {recentBitacoras.map((b, idx) => (
                 <motion.div
@@ -343,9 +433,22 @@ export default function Home() {
         )}
       </section>
 
-      {/* Contacto */}
+      {/* ── SECCIÓN REGISTRO / CONTACTO ── */}
       <section id="contacto" className="container mx-auto px-4 py-16">
-        <h2 className="section-title">Contacto</h2>
+        <div className="flex flex-col items-center text-center mb-12">
+          <img
+            src={beeHappyImg}
+            alt="Abeja Feliz del Semillero"
+            className="w-28 h-28 md:w-36 md:h-36 object-contain mb-4 drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]"
+          />
+          <h2 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-wider">
+            Registro
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-red rounded-full mt-3" />
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl">
+            Contáctanos y sé parte del semillero
+          </p>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -376,6 +479,18 @@ export default function Home() {
   );
 }
 
+/**
+ * ContactForm — Formulario de contacto con envío via API.
+ *
+ * Usa useMutation de React Query para manejar el envío asíncrono.
+ * Estados:
+ * - idle: formulario listo para completar.
+ * - pending: enviando, botón deshabilitado con spinner.
+ * - success: muestra mensaje de confirmación verde.
+ * - error: muestra mensaje de error rojo.
+ *
+ * @returns {JSX.Element} Formulario de contacto
+ */
 function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');

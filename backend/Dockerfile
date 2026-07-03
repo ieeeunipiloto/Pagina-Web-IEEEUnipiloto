@@ -1,3 +1,14 @@
+# backend/Dockerfile — Build multi-etapa para la API backend.
+#
+# Etapas:
+#   base    - Imagen base Node.js 20 Alpine.
+#   deps    - Instala dependencias de producción (npm ci).
+#   builder - Genera Prisma Client y compila TypeScript a JavaScript.
+#   runner  - Imagen final minimalista con solo dist/, node_modules/,
+#             package.json y prisma/. Ejecuta como usuario no root (appuser).
+#
+# Puerto expuesto: 3000.
+
 FROM node:20-alpine AS base
 
 # Install dependencies only when needed

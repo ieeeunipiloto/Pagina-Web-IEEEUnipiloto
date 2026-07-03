@@ -1,3 +1,21 @@
+/**
+ * Footer.tsx — Pie de página principal.
+ *
+ * Componente de pie de página que muestra:
+ * - Año actual dinámico y nombre del semillero.
+ * - Nombre de la universidad.
+ * - Enlaces sociales: IEEE, GitHub, Email.
+ *
+ * Todos los enlaces externos se abren en nueva pestaña por seguridad
+ * y usan rel="noopener noreferrer" para prevenir tabnabbing.
+ */
+
+/**
+ * Footer — Componente de pie de página.
+ * El año del copyright se calcula automáticamente con new Date().
+ *
+ * @returns {JSX.Element} Pie de página con créditos y redes sociales
+ */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -15,13 +33,14 @@ export default function Footer() {
             Diseñado para Investigación y Desarrollo
           </p>
           
+          {/* Enlaces a redes y contacto */}
           <div className="mt-6 flex justify-center gap-6">
             <a 
               href="https://www.ieee.org" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-cyber-blue hover:text-cyber-red transition-colors"
-              aria-label="IEEE"
+              aria-label="Sitio web oficial de IEEE"
             >
               <i className="ti ti-bolt text-2xl"></i>
             </a>
@@ -30,14 +49,14 @@ export default function Footer() {
               target="_blank" 
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
-              aria-label="GitHub"
+              aria-label="Repositorio GitHub del semillero"
             >
               <i className="ti ti-brand-github text-2xl"></i>
             </a>
             <a 
               href="mailto:ramaieee@unipiloto.edu.co"
               className="text-gray-400 hover:text-white transition-colors"
-              aria-label="Email"
+              aria-label="Enviar correo electrónico al semillero"
             >
               <i className="ti ti-mail text-2xl"></i>
             </a>

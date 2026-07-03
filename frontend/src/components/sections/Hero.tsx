@@ -1,10 +1,31 @@
+/**
+ * Hero.tsx — Sección Hero principal con animación 3D y contenido introductorio.
+ *
+ * Esta es la primera sección que ve el usuario. Combina:
+ * 1. Escena 3D interactiva (SmartCityScene) renderizada con Three.js / React Three Fiber.
+ * 2. Overlay oscuro para legibilidad del texto.
+ * 3. Título pixelado "SEMILLERO IOT E ITSS".
+ * 4. Mascota del semillero (abeja) con animación flotante.
+ * 5. Botones de navegación rápida a las secciones principales.
+ * 6. Indicador de scroll animado.
+ *
+ * Manejo de errores:
+ * - ErrorBoundary captura errores de WebGL y muestra un fallback plano.
+ * - Suspense maneja la carga diferida del canvas 3D.
+ */
+
 import { Suspense, Component, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import SmartCityScene from './SmartCityScene';
-import beeImg from '@/assets/Abeja_Camiseta.png';
+import Terminal from './Terminal';
+
 /**
- * Error Boundary simple para manejar errores de WebGL
+ * ErrorBoundary — Captura errores de renderizado en la escena 3D.
+ *
+ * Si SmartCityScene falla (ej. WebGL no soportado), muestra un fallback
+ * visual en lugar de romper toda la página.
+ *
+ * @extends {Component<{children: ReactNode, fallback: ReactNode}, {hasError: boolean}>}
  */
 class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode; fallback: ReactNode }) {
@@ -17,7 +38,7 @@ class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode
   }
 
   componentDidCatch(error: Error) {
-    console.warn('Error rendering 3D scene:', error);
+    console.warn('Error al renderizar escena 3D:', error);
   }
 
   render() {
@@ -29,10 +50,13 @@ class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode
 }
 
 /**
- * Componente Hero con animación 3D
- * Incluye escena Three.js en el fondo
+ * Hero — Componente principal del encabezado de la página.
+ *
+ * Incluye la escena 3D de fondo con SmartCityScene, la mascota flotante,
+ * el título principal y botones de navegación con animaciones de entrada.
+ *
+ * @returns {JSX.Element} Sección hero de pantalla completa
  */
-
 export default function Hero() {
   return (
     <section id="hero3d" className="relative h-screen overflow-hidden bg-[#030d38]">
@@ -43,10 +67,13 @@ export default function Hero() {
         </ErrorBoundary>
       </Suspense>
 
-      {/* Overlay oscuro */}
+      {/* Overlay oscuro para mejorar contraste del texto sobre la escena 3D */}
       <div className="absolute inset-0 bg-black/20 z-10" />
 
-      {/* Contenido principal */}
+      {/* Degradado inferior para transición suave entre hero y contenido */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-[#030d38] z-30" />
+
+      {/* Contenido principal centrado */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -54,12 +81,12 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-4xl"
         >
-          {/* Título principal */}
+          {/* Título principal con estilo pixelado */}
           <h1 className="pixel-title mb-6">
             <span>SEMILLERO IOT E ITSS</span>
           </h1>
 
-          {/* Subtítulo */}
+          {/* Subtítulo con áreas de enfoque */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -69,52 +96,20 @@ export default function Hero() {
             Smart Cities • IoT • Gemelos Digitales • ITSS • Laboratorio Remoto
           </motion.p>
 
-          {/* Mascota (Abeja) */}
+          {/* Terminal interactiva */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mb-8 flex justify-center"
+            className="mb-8"
           >
-            <div className="w-48 h-48 relative animate-float">
-              <div className="w-full h-full bg-white rounded-full flex items-center justify-center p-3 shadow-2xl">
-                <img
-                  src={beeImg}
-                  alt="Abeja Mascota"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-8 bg-black/30 rounded-full blur-md" />
-            </div>
+            <Terminal />
           </motion.div>
 
-          {/* Botones de navegación */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex flex-wrap justify-center gap-4"
-          >
-            <Link to="/ieee-unipiloto" className="btn-cyber btn-ieee">
-              <i className="ti ti-bolt"></i>
-              IEEE
-            </Link>
-            <a href="#laboratorio" className="btn-cyber btn-lab">
-              <i className="ti ti-flask"></i>
-              Laboratorio
-            </a>
-            <a href="#blog" className="btn-cyber btn-blog">
-              <i className="ti ti-pencil"></i>
-              Blog
-            </a>
-            <a href="#contacto" className="btn-cyber btn-contact">
-              <i className="ti ti-mail"></i>
-              Contacto
-            </a>
-          </motion.div>
+
         </motion.div>
 
-        {/* Indicador de scroll */}
+        {/* Indicador animado de scroll hacia abajo */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

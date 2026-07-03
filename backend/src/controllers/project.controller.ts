@@ -1,17 +1,30 @@
+/**
+ * controllers/project.controller.ts — Controlador HTTP para Proyectos.
+ *
+ * Capa de presentación de la API REST para el recurso "projects".
+ * Cada método recibe la petición HTTP, delega la lógica de negocio
+ * al ProjectService, y envía la respuesta formateada.
+ *
+ * Principio: Los controladores NO contienen lógica de negocio;
+ * solo orquestan la comunicación HTTP ↔ Servicio.
+ *
+ * Endpoints manejados:
+ * - GET    /api/projects              → getAllProjects
+ * - GET    /api/projects/:id          → getProjectById
+ * - POST   /api/projects              → createProject
+ * - PUT    /api/projects/:id          → updateProject
+ * - DELETE /api/projects/:id          → deleteProject
+ * - POST   /api/projects/:id/images   → addProjectImage
+ * - DELETE /api/projects/images/:id   → deleteProjectImage
+ */
+
 import { Request, Response } from 'express';
 import { projectService } from '../services/project.service';
 import { CreateProjectInput, UpdateProjectInput } from '../types/project.schema';
 import { auditLog } from '../config/logger';
 
-/**
- * Controlador de Proyectos
- * Maneja las peticiones HTTP y delega la lógica al servicio
- */
-
 export class ProjectController {
-  /**
-   * GET /api/projects
-   */
+  /** GET /api/projects — Listar todos los proyectos */
   async getAllProjects(req: Request, res: Response): Promise<void> {
     const projects = await projectService.getAllProjects();
     
@@ -23,9 +36,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * GET /api/projects/:id
-   */
+  /** GET /api/projects/:id — Obtener proyecto por UUID */
   async getProjectById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const project = await projectService.getProjectById(id);
@@ -37,9 +48,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * POST /api/projects
-   */
+  /** POST /api/projects — Crear nuevo proyecto (auditado) */
   async createProject(req: Request, res: Response): Promise<void> {
     const data: CreateProjectInput = req.body;
     const project = await projectService.createProject(data);
@@ -58,9 +67,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * PUT /api/projects/:id
-   */
+  /** PUT /api/projects/:id — Actualizar proyecto existente (auditado) */
   async updateProject(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const data: UpdateProjectInput = req.body;
@@ -79,9 +86,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * DELETE /api/projects/:id
-   */
+  /** DELETE /api/projects/:id — Eliminar proyecto (auditado) */
   async deleteProject(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     await projectService.deleteProject(id);
@@ -98,9 +103,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * POST /api/projects/:id/images
-   */
+  /** POST /api/projects/:id/images — Agregar imagen a proyecto */
   async addProjectImage(req: Request, res: Response): Promise<void> {
     const { id: projectId } = req.params;
     const { imageUrl } = req.body;
@@ -115,9 +118,7 @@ export class ProjectController {
     });
   }
 
-  /**
-   * DELETE /api/projects/images/:imageId
-   */
+  /** DELETE /api/projects/images/:imageId — Eliminar imagen de proyecto */
   async deleteProjectImage(req: Request, res: Response): Promise<void> {
     const { imageId } = req.params;
     await projectService.deleteProjectImage(imageId);

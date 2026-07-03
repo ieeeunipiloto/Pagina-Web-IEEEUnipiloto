@@ -1,5 +1,19 @@
+/**
+ * types/post.schema.ts — Schemas Zod de validación para Posts (Eventos/Blog).
+ *
+ * Define reglas de validación para crear y actualizar posts.
+ * Incluye validación cross-field: la fecha de fin debe ser posterior
+ * a la fecha de inicio.
+ *
+ * Schemas:
+ * - createPostSchema: validación completa con regla de fechas.
+ * - updatePostSchema: todos los campos opcionales.
+ * - postIdSchema: valida UUID en parámetros de ruta.
+ */
+
 import { z } from 'zod';
 
+/** Validador de URLs de imagen (absoluta o local /uploads/) */
 const imageUrlOrLocal = z.string().refine(
   (val) => {
     try {
@@ -13,9 +27,10 @@ const imageUrlOrLocal = z.string().refine(
 );
 
 /**
- * Schemas de validación para Posts (Eventos/Blog)
+ * Schema para crear un post.
+ * Incluye validación cross-field con .refine():
+ * Si endDate está presente, debe ser >= startDate.
  */
-
 export const createPostSchema = z.object({
   title: z.string()
     .min(5, 'El título debe tener al menos 5 caracteres')
@@ -53,6 +68,7 @@ export const createPostSchema = z.object({
   }
 );
 
+/** Schema para actualizar un post (todos los campos opcionales) */
 export const updatePostSchema = z.object({
   title: z.string()
     .min(5, 'El título debe tener al menos 5 caracteres')
@@ -83,14 +99,13 @@ export const updatePostSchema = z.object({
     .nullable(),
 });
 
+/** Schema para validar UUID en params de ruta */
 export const postIdSchema = z.object({
   id: z.string()
     .uuid('ID de post inválido'),
 });
 
-/**
- * Tipos inferidos de los schemas
- */
+/** Tipos inferidos */
 export type CreatePostInput = z.infer<typeof createPostSchema>;
 export type UpdatePostInput = z.infer<typeof updatePostSchema>;
 export type PostIdParam = z.infer<typeof postIdSchema>;

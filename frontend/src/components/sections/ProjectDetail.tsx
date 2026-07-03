@@ -1,12 +1,42 @@
+/**
+ * ProjectDetail.tsx — Página de detalle de un proyecto de laboratorio.
+ *
+ * Muestra la información completa de un proyecto individual:
+ * - Imagen principal (si existe).
+ * - Nombre y descripción corta.
+ * - Documentación técnica completa.
+ * - Enlace al repositorio (GitHub).
+ * - Galería de imágenes adicionales.
+ *
+ * Estados:
+ * - Loading: indicador de carga mientras se obtienen datos.
+ * - Error: mensaje de error con opción de volver al inicio.
+ * - Datos: visualización completa del proyecto.
+ *
+ * El ID del proyecto se obtiene del parámetro de ruta :id.
+ */
+
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '@/services/api';
 import { Project } from '@/types';
 import { getImageUrl } from '@/utils/config';
 
+/**
+ * ProjectDetail — Componente de detalle de proyecto.
+ * Usa React Query con queryKey ['project', id] para cache y refetch.
+ *
+ * @returns {JSX.Element} Vista detallada del proyecto
+ */
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
 
+  /**
+   * Consulta: obtener proyecto por UUID.
+   * - enabled: solo ejecuta si id existe (evita llamadas con undefined).
+   * - retry: solo 1 reintento (no insistir si el ID no existe).
+   * - staleTime: 5 minutos antes de considerar datos obsoletos.
+   */
   const { data: project, isPending, isError, error } = useQuery<Project>({
     queryKey: ['project', id],
     queryFn: () => api.getProjectById(id!),
@@ -15,6 +45,7 @@ export default function ProjectDetail() {
     staleTime: 1000 * 60 * 5,
   });
 
+  /* Estado de carga */
   if (isPending) {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
@@ -23,6 +54,7 @@ export default function ProjectDetail() {
     );
   }
 
+  /* Estado de error: muestra mensaje y botón de retorno */
   if (isError || !project) {
     const errorMessage =
       error instanceof Error
@@ -43,6 +75,7 @@ export default function ProjectDetail() {
     );
   }
 
+  /* Estado con datos */
   return (
     <div className="min-h-screen bg-[#030d38] py-16">
       <div className="container mx-auto px-4">
@@ -52,6 +85,7 @@ export default function ProjectDetail() {
         </Link>
 
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
+          {/* Imagen principal del proyecto */}
           {project.mainImage && (
             <img
               src={getImageUrl(project.mainImage)}
@@ -69,6 +103,7 @@ export default function ProjectDetail() {
               {project.shortDesc}
             </p>
 
+            {/* Documentación técnica completa */}
             <div className="prose max-w-none mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Documentación Técnica
@@ -78,6 +113,7 @@ export default function ProjectDetail() {
               </div>
             </div>
 
+            {/* Enlace al repositorio */}
             {project.repoUrl && (
               <div className="mb-8">
                 <a
@@ -92,6 +128,7 @@ export default function ProjectDetail() {
               </div>
             )}
 
+            {/* Galería de imágenes adicionales */}
             {project.images && project.images.length > 0 && (
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">

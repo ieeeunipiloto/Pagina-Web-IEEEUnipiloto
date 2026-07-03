@@ -1,3 +1,16 @@
+/**
+ * services/post.service.ts — Lógica de negocio para Posts (Eventos/Blog).
+ *
+ * Implementa CRUD completo para posts con gestión de imágenes.
+ * Sigue el mismo patrón que ProjectService.
+ *
+ * Responsabilidades:
+ * - CRUD de posts (eventos y bitácoras).
+ * - Gestión de imágenes (agregar, eliminar con limpieza de archivos).
+ * - Validación de existencia antes de operaciones.
+ * - Limpieza de archivos físicos al eliminar.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { prisma } from '../config/database';
@@ -5,15 +18,8 @@ import { NotFoundError } from '../middlewares/errorHandler';
 import { CreatePostInput, UpdatePostInput } from '../types/post.schema';
 import { logger } from '../config/logger';
 
-/**
- * Servicio de Posts (Eventos/Blog)
- * Encapsula toda la lógica de negocio relacionada con posts
- */
-
 export class PostService {
-  /**
-   * Obtener todos los posts con sus imágenes
-   */
+  /** Obtener todos los posts ordenados por fecha de inicio descendente */
   async getAllPosts() {
     logger.info('Obteniendo todos los posts');
     
@@ -27,9 +33,7 @@ export class PostService {
     });
   }
 
-  /**
-   * Obtener un post por ID
-   */
+  /** Obtener un post por UUID. Lanza NotFoundError si no existe. */
   async getPostById(id: string) {
     logger.info('Obteniendo post por ID', { postId: id });
     
@@ -47,9 +51,7 @@ export class PostService {
     return post;
   }
 
-  /**
-   * Crear un nuevo post
-   */
+  /** Crear un nuevo post con datos validados */
   async createPost(data: CreatePostInput) {
     logger.info('Creando nuevo post', { title: data.title });
     
@@ -68,13 +70,10 @@ export class PostService {
     });
   }
 
-  /**
-   * Actualizar un post existente
-   */
+  /** Actualizar un post (merge parcial de campos) */
   async updatePost(id: string, data: UpdatePostInput) {
     logger.info('Actualizando post', { postId: id });
     
-    // Verificar que el post existe
     await this.getPostById(id);
 
     return prisma.post.update({
@@ -95,16 +94,12 @@ export class PostService {
     });
   }
 
-  /**
-   * Eliminar un post
-   */
+  /** Eliminar post y sus archivos de imagen asociados */
   async deletePost(id: string) {
     logger.info('Eliminando post', { postId: id });
     
-    // Verificar que el post existe
     const post = await this.getPostById(id);
 
-    // Eliminar archivos locales de las imágenes
     for (const img of post.images) {
       this.deleteLocalFile(img.imageUrl);
     }
@@ -119,13 +114,10 @@ export class PostService {
     return { message: 'Post eliminado exitosamente' };
   }
 
-  /**
-   * Agregar imagen a un post
-   */
+  /** Agregar imagen a un post */
   async addPostImage(postId: string, imageUrl: string) {
     logger.info('Agregando imagen a post', { postId, imageUrl });
     
-    // Verificar que el post existe
     await this.getPostById(postId);
 
     return prisma.postImage.create({
@@ -136,9 +128,7 @@ export class PostService {
     });
   }
 
-  /**
-   * Eliminar imagen de un post
-   */
+  /** Eliminar imagen de un post (incluye archivo físico) */
   async deletePostImage(imageId: string) {
     logger.info('Eliminando imagen de post', { imageId });
     
@@ -159,6 +149,7 @@ export class PostService {
     return { message: 'Imagen eliminada exitosamente' };
   }
 
+  /** Elimina archivo local si la ruta empieza con /uploads/ */
   private deleteLocalFile(imageUrl: string): void {
     try {
       if (imageUrl.startsWith('/uploads/')) {

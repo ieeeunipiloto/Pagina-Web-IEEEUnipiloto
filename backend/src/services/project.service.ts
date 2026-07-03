@@ -1,3 +1,19 @@
+/**
+ * services/project.service.ts — Lógica de negocio para Proyectos.
+ *
+ * Esta capa encapsula todas las operaciones CRUD de proyectos,
+ * incluyendo la gestión de imágenes asociadas.
+ *
+ * Responsabilidades:
+ * - CRUD de proyectos (crear, leer, actualizar, eliminar).
+ * - Gestión de imágenes (agregar, eliminar con limpieza de archivos).
+ * - Verificación de existencia antes de operaciones.
+ * - Limpieza de archivos del sistema de archivos al eliminar.
+ *
+ * Principio: Servicio → Controlador → HTTP. El servicio nunca sabe
+ * que está siendo llamado desde HTTP; podría ser desde un worker, CLI, etc.
+ */
+
 import fs from 'fs';
 import path from 'path';
 import { prisma } from '../config/database';
@@ -5,16 +21,8 @@ import { NotFoundError } from '../middlewares/errorHandler';
 import { CreateProjectInput, UpdateProjectInput } from '../types/project.schema';
 import { logger } from '../config/logger';
 
-/**
- * Servicio de Proyectos
- * Encapsula toda la lógica de negocio relacionada con proyectos
- * Principio: Separación de responsabilidades (Controlador -> Servicio -> Base de Datos)
- */
-
 export class ProjectService {
-  /**
-   * Obtener todos los proyectos con sus imágenes
-   */
+  /** Obtener todos los proyectos ordenados por fecha de inicio descendente */
   async getAllProjects() {
     logger.info('Obteniendo todos los proyectos');
     
@@ -28,9 +36,7 @@ export class ProjectService {
     });
   }
 
-  /**
-   * Obtener un proyecto por ID
-   */
+  /** Obtener un proyecto por UUID. Lanza NotFoundError si no existe. */
   async getProjectById(id: string) {
     logger.info('Obteniendo proyecto por ID', { projectId: id });
     
@@ -48,9 +54,7 @@ export class ProjectService {
     return project;
   }
 
-  /**
-   * Crear un nuevo proyecto
-   */
+  /** Crear un nuevo proyecto con los datos validados */
   async createProject(data: CreateProjectInput) {
     logger.info('Creando nuevo proyecto', { name: data.name });
     
@@ -70,12 +74,12 @@ export class ProjectService {
   }
 
   /**
-   * Actualizar un proyecto existente
+   * Actualizar un proyecto existente.
+   * Solo actualiza los campos proporcionados (merge parcial).
    */
   async updateProject(id: string, data: UpdateProjectInput) {
     logger.info('Actualizando proyecto', { projectId: id });
     
-    // Verificar que el proyecto existe
     await this.getProjectById(id);
 
     return prisma.project.update({
@@ -95,15 +99,14 @@ export class ProjectService {
   }
 
   /**
-   * Eliminar un proyecto
+   * Eliminar un proyecto y sus archivos de imagen asociados.
+   * Primero elimina los archivos locales (fotos), luego el registro en BD.
    */
   async deleteProject(id: string) {
     logger.info('Eliminando proyecto', { projectId: id });
     
-    // Verificar que el proyecto existe
     const project = await this.getProjectById(id);
 
-    // Eliminar archivos locales de las imágenes
     for (const img of project.images) {
       this.deleteLocalFile(img.imageUrl);
     }
@@ -118,13 +121,10 @@ export class ProjectService {
     return { message: 'Proyecto eliminado exitosamente' };
   }
 
-  /**
-   * Agregar imagen a un proyecto
-   */
+  /** Agregar una imagen a un proyecto (por URL) */
   async addProjectImage(projectId: string, imageUrl: string) {
     logger.info('Agregando imagen a proyecto', { projectId, imageUrl });
     
-    // Verificar que el proyecto existe
     await this.getProjectById(projectId);
 
     return prisma.projectImage.create({
@@ -136,7 +136,8 @@ export class ProjectService {
   }
 
   /**
-   * Eliminar imagen de un proyecto
+   * Eliminar una imagen de un proyecto.
+   * También borra el archivo físico del disco si es local.
    */
   async deleteProjectImage(imageId: string) {
     logger.info('Eliminando imagen de proyecto', { imageId });
@@ -158,6 +159,11 @@ export class ProjectService {
     return { message: 'Imagen eliminada exitosamente' };
   }
 
+  /**
+   * deleteLocalFile — Elimina un archivo del sistema de archivos local.
+   * Solo actúa si la URL empieza con /uploads/ (archivos locales).
+   * Si el archivo no existe, lo ignora silenciosamente.
+   */
   private deleteLocalFile(imageUrl: string): void {
     try {
       if (imageUrl.startsWith('/uploads/')) {

@@ -1,12 +1,42 @@
+/**
+ * PostDetail.tsx — Página de detalle de un post (evento o bitácora).
+ *
+ * Muestra la información completa de un post individual:
+ * - Imagen principal (si existe).
+ * - Título y fechas (inicio y fin opcional).
+ * - Contenido completo del post.
+ * - Enlace externo para eventos (ej. formulario de inscripción).
+ * - Galería de imágenes adicionales.
+ *
+ * Estados:
+ * - Loading: indicador de carga.
+ * - Error: mensaje de error con opción de retorno.
+ * - Datos: visualización completa del post con fechas formateadas en español.
+ *
+ * El ID del post se obtiene del parámetro de ruta :id.
+ */
+
 import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '@/services/api';
 import { Post } from '@/types';
 import { getImageUrl } from '@/utils/config';
 
+/**
+ * PostDetail — Componente de detalle de publicación (evento/bitácora).
+ * Usa React Query con queryKey ['post', id] para cache y refetch.
+ *
+ * @returns {JSX.Element} Vista detallada del post
+ */
 export default function PostDetail() {
   const { id } = useParams<{ id: string }>();
 
+  /**
+   * Consulta: obtener post por UUID.
+   * - enabled: solo ejecuta si id existe.
+   * - retry: solo 1 reintento.
+   * - staleTime: 5 minutos.
+   */
   const { data: post, isPending, isError, error } = useQuery<Post>({
     queryKey: ['post', id],
     queryFn: () => api.getPostById(id!),
@@ -15,6 +45,7 @@ export default function PostDetail() {
     staleTime: 1000 * 60 * 5,
   });
 
+  /* Estado de carga */
   if (isPending) {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
@@ -23,6 +54,7 @@ export default function PostDetail() {
     );
   }
 
+  /* Estado de error */
   if (isError || !post) {
     const errorMessage =
       error instanceof Error
@@ -43,6 +75,7 @@ export default function PostDetail() {
     );
   }
 
+  /* Estado con datos */
   return (
     <div className="min-h-screen bg-[#030d38] py-16">
       <div className="container mx-auto px-4">
@@ -52,6 +85,7 @@ export default function PostDetail() {
         </Link>
 
         <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
+          {/* Imagen principal */}
           {post.mainImage && (
             <img
               src={getImageUrl(post.mainImage)}
@@ -65,6 +99,7 @@ export default function PostDetail() {
               {post.title}
             </h1>
 
+            {/* Fechas del post/evento formateadas en español */}
             <div className="flex items-center gap-4 text-gray-600 mb-6">
               <div className="flex items-center gap-2">
                 <i className="ti ti-calendar"></i>
@@ -93,12 +128,14 @@ export default function PostDetail() {
               )}
             </div>
 
+            {/* Contenido del post */}
             <div className="prose max-w-none mb-8">
               <div className="text-gray-700 whitespace-pre-wrap text-lg leading-relaxed">
                 {post.content}
               </div>
             </div>
 
+            {/* Enlace externo para eventos */}
             {post.eventLink && (
               <div className="mb-8">
                 <a
@@ -113,6 +150,7 @@ export default function PostDetail() {
               </div>
             )}
 
+            {/* Galería de imágenes */}
             {post.images && post.images.length > 0 && (
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">

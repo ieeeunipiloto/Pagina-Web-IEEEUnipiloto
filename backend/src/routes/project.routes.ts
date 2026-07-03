@@ -1,3 +1,13 @@
+/**
+ * routes/project.routes.ts — Definición de rutas para el recurso Proyectos.
+ *
+ * Configura el enrutador Express con validación Zod en cada endpoint
+ * que requiere entrada del usuario (body, params).
+ *
+ * La validación se aplica como middleware antes del controlador,
+ * asegurando que solo datos válidos lleguen a la capa de servicio.
+ */
+
 import { Router } from 'express';
 import { projectController } from '../controllers/project.controller';
 import { validate } from '../middlewares/validation';
@@ -9,31 +19,27 @@ import {
 
 const router = Router();
 
-/**
- * Rutas de Proyectos
- */
-
-// GET /api/projects - Obtener todos los proyectos
+/* GET / — Listar todos los proyectos (sin validación) */
 router.get(
   '/',
   projectController.getAllProjects.bind(projectController)
 );
 
-// GET /api/projects/:id - Obtener proyecto por ID
+/* GET /:id — Obtener proyecto por UUID (valida params) */
 router.get(
   '/:id',
   validate(projectIdSchema, 'params'),
   projectController.getProjectById.bind(projectController)
 );
 
-// POST /api/projects - Crear nuevo proyecto
+/* POST / — Crear proyecto (valida body con createProjectSchema) */
 router.post(
   '/',
   validate(createProjectSchema, 'body'),
   projectController.createProject.bind(projectController)
 );
 
-// PUT /api/projects/:id - Actualizar proyecto
+/* PUT /:id — Actualizar proyecto (valida params + body) */
 router.put(
   '/:id',
   validate(projectIdSchema, 'params'),
@@ -41,21 +47,21 @@ router.put(
   projectController.updateProject.bind(projectController)
 );
 
-// DELETE /api/projects/:id - Eliminar proyecto
+/* DELETE /:id — Eliminar proyecto (valida params) */
 router.delete(
   '/:id',
   validate(projectIdSchema, 'params'),
   projectController.deleteProject.bind(projectController)
 );
 
-// POST /api/projects/:id/images - Agregar imagen a proyecto
+/* POST /:id/images — Agregar imagen a proyecto */
 router.post(
   '/:id/images',
   validate(projectIdSchema, 'params'),
   projectController.addProjectImage.bind(projectController)
 );
 
-// DELETE /api/projects/images/:imageId - Eliminar imagen de proyecto
+/* DELETE /images/:imageId — Eliminar imagen de proyecto */
 router.delete(
   '/images/:imageId',
   projectController.deleteProjectImage.bind(projectController)

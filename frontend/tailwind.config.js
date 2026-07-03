@@ -1,4 +1,15 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * tailwind.config.js — Configuración del tema de Tailwind CSS.
+ *
+ * Define la paleta de colores institucional (primary, danger, dark, cyber),
+ * fuentes tipográficas (Bungee Shade para títulos, Segoe UI para texto),
+ * y animaciones reutilizables (float, pulse-slow, bounce-slow).
+ *
+ * Los colores "cyber" se usan en la temática de ciudad inteligente y
+ * efectos visuales de la escena 3D.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 export default {
   content: [
     "./index.html",

@@ -1,9 +1,28 @@
+/**
+ * services/contact.service.ts — Servicio de envío de correos de contacto.
+ *
+ * Utiliza Nodemailer para enviar correos electrónicos con los datos
+ * del formulario de contacto de la página web.
+ *
+ * Configuración SMTP obtenida de variables de entorno:
+ * - SMTP_HOST (ej. smtp.gmail.com)
+ * - SMTP_PORT (587 para TLS, 465 para SSL)
+ * - SMTP_USER / SMTP_PASS (credenciales)
+ * - CONTACT_EMAIL (destinatario)
+ *
+ * El correo se envía con formato HTML responsivo y estilizado inline.
+ */
+
 import nodemailer from 'nodemailer';
 import { envConfig } from '../config/environment';
 import { logger } from '../config/logger';
 
 const SUBJECT = 'Peticion de vinculacion a semillero IoT e ITS';
 
+/**
+ * Transporter de Nodemailer configurado con las credenciales SMTP.
+ * Se crea una vez al cargar el módulo (singleton).
+ */
 const transporter = nodemailer.createTransport({
   host: envConfig.smtpHost,
   port: envConfig.smtpPort,
@@ -15,6 +34,13 @@ const transporter = nodemailer.createTransport({
 });
 
 export class ContactService {
+  /**
+   * sendContactEmail — Envía un correo con los datos del formulario.
+   *
+   * @param senderEmail - Correo de la persona que contacta
+   * @param message - Mensaje escrito en el formulario
+   * @throws Error si el envío falla (configuración SMTP inválida)
+   */
   async sendContactEmail(senderEmail: string, message: string): Promise<void> {
     const mailOptions = {
       from: `"${senderEmail}" <${envConfig.smtpUser || 'noreply@unipiloto.edu.co'}>`,
