@@ -20,6 +20,8 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default('900000'),
   RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default('100'),
   
+  ADMIN_API_KEY: z.string().min(1, 'ADMIN_API_KEY es requerida para proteger rutas de escritura'),
+
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
   LOG_FORMAT: z.enum(['json', 'simple']).default('json'),
   
@@ -82,6 +84,9 @@ export const envConfig = {
   rateLimitWindowMs: env.RATE_LIMIT_WINDOW_MS,
   rateLimitMaxRequests: env.RATE_LIMIT_MAX_REQUESTS,
   
+  // Admin API Key
+  adminApiKey: env.ADMIN_API_KEY,
+
   // Logging
   logLevel: env.LOG_LEVEL,
   logFormat: env.LOG_FORMAT,
