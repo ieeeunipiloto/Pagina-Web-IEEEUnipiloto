@@ -95,3 +95,23 @@ model PostImage {
   @@map("post_images")
   @@index([postId])
 }
+
+// ──────────────────────────────────────────────
+// MIEMBROS DE LA RAMA IEEE
+// ──────────────────────────────────────────────
+
+// Almacena los integrantes de la rama estudiantil IEEE Unipiloto.
+// Cada miembro tiene nombre, cargo, descripción y foto opcional.
+model Member {
+  id          String   @id @default(uuid())
+  name        String   @map("name")
+  role        String   @map("role")         // Cargo dentro de la rama (Presidente, Vicepresidente, Miembro, etc.)
+  description String   @map("description")  @db.Text
+  photo       String?  @map("photo")        // URL de la foto (subida como las imágenes de proyectos)
+  isLeader    Boolean  @default(false)      @map("is_leader") // true para el director/counselor (se muestra aparte)
+
+  createdAt   DateTime @default(now())      @map("created_at")
+  updatedAt   DateTime @updatedAt           @map("updated_at")
+
+  @@map("members")
+}

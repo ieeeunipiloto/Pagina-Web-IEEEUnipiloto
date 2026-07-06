@@ -36,6 +36,7 @@ import { logger } from './config/logger';
 
 import projectRoutes from './routes/project.routes';
 import postRoutes from './routes/post.routes';
+import memberRoutes from './routes/member.routes';
 import healthRoutes from './routes/health.routes';
 import contactRoutes from './routes/contact.routes';
 import uploadRoutes from './routes/upload.routes';
@@ -135,6 +136,7 @@ app.use('/ready', healthRoutes);
 /** Rutas de recursos CRUD */
 app.use('/api/projects', projectRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/members', memberRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', uploadRoutes);
 
