@@ -8,6 +8,7 @@
 import { Router } from 'express';
 import { postController } from '../controllers/post.controller';
 import { validate } from '../middlewares/validation';
+import { requireAdmin } from '../middlewares/requireAdmin';
 import { 
   createPostSchema, 
   updatePostSchema, 
@@ -32,6 +33,7 @@ router.get(
 /* POST / — Crear post (valida body con createPostSchema) */
 router.post(
   '/',
+  requireAdmin,
   validate(createPostSchema, 'body'),
   postController.createPost.bind(postController)
 );
@@ -39,6 +41,7 @@ router.post(
 /* PUT /:id — Actualizar post */
 router.put(
   '/:id',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   validate(updatePostSchema, 'body'),
   postController.updatePost.bind(postController)
@@ -47,6 +50,7 @@ router.put(
 /* DELETE /:id — Eliminar post */
 router.delete(
   '/:id',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   postController.deletePost.bind(postController)
 );
@@ -54,6 +58,7 @@ router.delete(
 /* POST /:id/images — Agregar imagen a post */
 router.post(
   '/:id/images',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   postController.addPostImage.bind(postController)
 );
@@ -61,6 +66,7 @@ router.post(
 /* DELETE /images/:imageId — Eliminar imagen de post */
 router.delete(
   '/images/:imageId',
+  requireAdmin,
   postController.deletePostImage.bind(postController)
 );
 

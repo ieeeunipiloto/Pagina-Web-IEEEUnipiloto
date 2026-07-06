@@ -83,7 +83,7 @@ app.use(cors({
     : envConfig.corsOrigin.split(','),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'x-correlation-id'],
+  allowedHeaders: ['Content-Type', 'x-correlation-id', 'x-admin-key'],
 }));
 
 /** Compresión gzip de respuestas */

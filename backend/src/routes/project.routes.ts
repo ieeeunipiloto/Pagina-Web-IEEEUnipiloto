@@ -11,6 +11,7 @@
 import { Router } from 'express';
 import { projectController } from '../controllers/project.controller';
 import { validate } from '../middlewares/validation';
+import { requireAdmin } from '../middlewares/requireAdmin';
 import { 
   createProjectSchema, 
   updateProjectSchema, 
@@ -35,6 +36,7 @@ router.get(
 /* POST / — Crear proyecto (valida body con createProjectSchema) */
 router.post(
   '/',
+  requireAdmin,
   validate(createProjectSchema, 'body'),
   projectController.createProject.bind(projectController)
 );
@@ -42,6 +44,7 @@ router.post(
 /* PUT /:id — Actualizar proyecto (valida params + body) */
 router.put(
   '/:id',
+  requireAdmin,
   validate(projectIdSchema, 'params'),
   validate(updateProjectSchema, 'body'),
   projectController.updateProject.bind(projectController)
@@ -50,6 +53,7 @@ router.put(
 /* DELETE /:id — Eliminar proyecto (valida params) */
 router.delete(
   '/:id',
+  requireAdmin,
   validate(projectIdSchema, 'params'),
   projectController.deleteProject.bind(projectController)
 );
@@ -57,6 +61,7 @@ router.delete(
 /* POST /:id/images — Agregar imagen a proyecto */
 router.post(
   '/:id/images',
+  requireAdmin,
   validate(projectIdSchema, 'params'),
   projectController.addProjectImage.bind(projectController)
 );
@@ -64,6 +69,7 @@ router.post(
 /* DELETE /images/:imageId — Eliminar imagen de proyecto */
 router.delete(
   '/images/:imageId',
+  requireAdmin,
   projectController.deleteProjectImage.bind(projectController)
 );
 
