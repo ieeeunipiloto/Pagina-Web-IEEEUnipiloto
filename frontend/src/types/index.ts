@@ -150,3 +150,14 @@ export interface UploadResult {
   size: number;
   mimetype: string;
 }
+
+export interface Member {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  photo?: string | null;
+  isLeader: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -17,6 +17,7 @@ import { config } from '@/utils/config';
 import { 
   Project, 
   Post, 
+  Member,
   ContactPayload,
   UploadResult,
   ApiListResponse, 
@@ -219,6 +220,22 @@ class ApiClient {
   /** DELETE /api/posts/images/:imageId — Eliminar imagen de post */
   async deletePostImage(imageId: string): Promise<void> {
     await this.client.delete(`/posts/images/${imageId}`);
+  }
+
+  // ──────────────────────────────────────────────
+  // MIEMBROS IEEE (READ-ONLY)
+  // ──────────────────────────────────────────────
+
+  /** GET /api/members — Obtener todos los miembros IEEE */
+  async getMembers(): Promise<Member[]> {
+    const { data } = await this.client.get<ApiListResponse<Member>>('/members');
+    return data.data;
+  }
+
+  /** GET /api/members/:id — Obtener miembro por UUID */
+  async getMemberById(id: string): Promise<Member> {
+    const { data } = await this.client.get<ApiResponse<Member>>(`/members/${id}`);
+    return data.data;
   }
 }
 

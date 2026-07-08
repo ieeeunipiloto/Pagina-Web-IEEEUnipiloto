@@ -60,20 +60,20 @@ class ErrorBoundary extends Component<{ children: ReactNode; fallback: ReactNode
 export default function Hero() {
   return (
     <section id="hero3d" className="relative h-screen overflow-hidden bg-[#030d38]">
-      {/* Escena 3D en el fondo - con fallback en caso de error WebGL */}
+      {/* Escena 3D en el fondo */}
       <Suspense fallback={<div className="absolute inset-0 bg-[#030d38]" />}>
         <ErrorBoundary fallback={<div className="absolute inset-0 bg-[#030d38]" />}>
           <SmartCityScene />
         </ErrorBoundary>
       </Suspense>
 
-      {/* Overlay oscuro para mejorar contraste del texto sobre la escena 3D */}
-      <div className="absolute inset-0 bg-black/20 z-10" />
+      {/* Overlay suave para legibilidad */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/30 z-10" />
 
-      {/* Degradado inferior para transición suave entre hero y contenido */}
+      {/* Degradado inferior */}
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-[#030d38] z-30" />
 
-      {/* Contenido principal centrado */}
+      {/* Contenido principal */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -81,22 +81,22 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-4xl"
         >
-          {/* Título principal con estilo pixelado */}
+          {/* Título pixelado */}
           <h1 className="pixel-title mb-6">
             <span>SEMILLERO IOT E ITSS</span>
           </h1>
 
-          {/* Subtítulo con áreas de enfoque */}
+          {/* Subtítulo */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-gray-300 text-lg md:text-xl mb-8"
+            className="text-gray-300/80 text-lg md:text-xl mb-8 font-light tracking-wide"
           >
-            Smart Cities • IoT • Gemelos Digitales • ITSS • Laboratorio Remoto
+            Smart Cities &bull; IoT &bull; Gemelos Digitales &bull; ITSS &bull; Laboratorio Remoto
           </motion.p>
 
-          {/* Terminal interactiva */}
+          {/* Terminal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -105,19 +105,18 @@ export default function Hero() {
           >
             <Terminal />
           </motion.div>
-
-
         </motion.div>
 
-        {/* Indicador animado de scroll hacia abajo */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.5, repeat: Infinity, repeatType: 'reverse' }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
         >
-          <a href="#institucional" className="text-white">
-            <i className="ti ti-chevron-down text-3xl animate-bounce"></i>
+          <a href="#institucional" className="flex flex-col items-center gap-1.5 text-gray-400 hover:text-white transition-colors">
+            <span className="text-[10px] font-medium uppercase tracking-widest">Scroll</span>
+            <i className="ti ti-chevron-down text-xl animate-bounce"></i>
           </a>
         </motion.div>
       </div>
