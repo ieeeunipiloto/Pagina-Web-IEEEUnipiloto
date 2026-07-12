@@ -15,7 +15,7 @@ export default function IEEEInfo() {
     queryFn: () => api.getMembers(),
   });
 
-  const leaders = members?.filter((m) => m.isLeader) ?? [];
+  const leaders = members?.filter((m) => m.isLeader).slice(0, 1) ?? [];
   const nonLeaders = members?.filter((m) => !m.isLeader) ?? [];
 
   return (
