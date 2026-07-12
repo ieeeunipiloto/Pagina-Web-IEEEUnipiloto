@@ -1,9 +1,19 @@
+/**
+ * vite.config.ts — Configuración de Vite para el frontend React.
+ *
+ * Define plugins (React, disableHostCheck), aliases de importación,
+ * servidor de desarrollo con proxy a backend (API y uploads),
+ * y optimización de build con code splitting (react-vendor, three-vendor).
+ *
+ * Ver nota: el host HMR está configurado para un túnel ngrok específico
+ * (ipad-decent-unengaged.ngrok-free.dev). Actualizar si se cambia de túnel.
+ */
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { disableHostCheck } from './vite-plugin-disable-host-check';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), disableHostCheck()],
   define: {
@@ -54,9 +64,13 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+        manualChunks(id: string) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router-dom')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+            return 'three-vendor';
+          }
         },
       },
     },

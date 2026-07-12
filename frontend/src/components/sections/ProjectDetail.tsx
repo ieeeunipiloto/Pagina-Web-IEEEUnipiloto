@@ -34,7 +34,7 @@ export default function ProjectDetail() {
         <div className="text-center max-w-md">
           <p className="text-red-400 text-xl mb-2">Error al cargar proyecto</p>
           <p className="text-gray-400 text-sm mb-6">{errorMessage}</p>
-          <Link to="/" className="btn-cyber btn-lab">
+          <Link to="/" className="nav-btn lab">
             <i className="ti ti-arrow-left"></i>
             Volver al inicio
           </Link>
@@ -43,73 +43,122 @@ export default function ProjectDetail() {
     );
   }
 
+  const startDate = new Date(project.startDate).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
   return (
-    <div className="min-h-screen bg-[#030d38] py-16">
-      <div className="container mx-auto px-4">
-        <Link to="/#laboratorio" className="btn-cyber btn-lab mb-8 inline-flex">
-          <i className="ti ti-arrow-left"></i>
-          Volver a proyectos
-        </Link>
+    <div className="min-h-screen bg-[#030d38]">
+      <div className="container mx-auto px-4 py-20 md:py-28">
 
-        <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
-          {project.mainImage && (
-            <img
-              src={getImageUrl(project.mainImage)}
-              alt={project.name}
-              className="w-full h-96 object-cover"
-            />
-          )}
-
-          <div className="p-8">
-            <h1 className="text-4xl font-bold text-primary-600 mb-4">
+        {/* Header with pill badge */}
+        <div className="mb-6">
+          <div style={{ borderLeft: '5px solid #0891b2', paddingLeft: '16px' }}>
+            <span className="inline-flex items-center gap-1.5" style={{
+              background: 'transparent',
+              border: '1.5px solid #0891b2',
+              color: '#0891b2',
+              borderRadius: '999px',
+              padding: '3px 12px',
+              fontSize: '11px',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}>
+              <i className="ti ti-circuit-board"></i>
+              Proyecto
+            </span>
+            <h1 className="text-2xl md:text-4xl font-extrabold text-white mt-2 leading-tight">
               {project.name}
             </h1>
+          </div>
+          <hr className="border-primary-500 border-2 w-1/4 mt-5" />
+        </div>
 
-            <p className="text-gray-600 text-lg mb-6">
-              {project.shortDesc}
-            </p>
-
-            <div className="prose max-w-none mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Documentación Técnica
-              </h2>
-              <div className="text-gray-700 whitespace-pre-wrap">
+        {/* Main content: two column layout */}
+        <div className="flex flex-col md:flex-row gap-8 items-start">
+          {/* Left: Documentation */}
+          <div className="w-full md:w-3/5">
+            <h3 className="text-white text-lg font-bold mb-3">Documentaci&oacute;n T&eacute;cnica</h3>
+            <div className="p-6 bg-gray-100 border-l-4 border-[var(--rojo-lab)] rounded shadow-sm">
+              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap" style={{ textAlign: 'justify' }}>
                 {project.documentation}
+              </p>
+            </div>
+          </div>
+
+          {/* Right: Image + Meta */}
+          <div className="w-full md:w-2/5 flex flex-col gap-4">
+            {project.mainImage && (
+              <div>
+                <img
+                  src={getImageUrl(project.mainImage)}
+                  alt={project.name}
+                  className="w-full max-w-full rounded shadow-lg"
+                  style={{ objectFit: 'cover', maxHeight: '400px' }}
+                />
               </div>
+            )}
+
+            {/* Date badge */}
+            <div className="flex items-center gap-2" style={{
+              background: '#cccccc',
+              border: '2px solid #4b5659',
+              color: '#000',
+              borderRadius: '999px',
+              padding: '8px 18px',
+              fontSize: '13px',
+              fontWeight: 500,
+              width: 'fit-content',
+            }}>
+              <i className="ti ti-calendar-check" style={{ fontSize: '20px' }}></i>
+              <span><strong>Fecha de inicio:</strong> {startDate}</span>
             </div>
 
+            {/* Repo button */}
             {project.repoUrl && (
-              <div className="mb-8">
+              <div style={{ maxWidth: '300px' }}>
                 <a
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-cyber btn-lab px-8"
+                  className="nav-btn Git text-center w-100"
+                  style={{ width: '100%', justifyContent: 'center' }}
                 >
-                  <i className="ti ti-brand-github"></i>
-                  Ver Repositorio
+                  <i className="ti ti-brand-git"></i>
+                  Ver Repositorio (GitHub/GitLab)
                 </a>
               </div>
             )}
-
-            {project.images && project.images.length > 0 && (
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Galería de Imágenes
-                </h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {project.images.map((image) => (
-                    <img
-                      key={image.id}
-                      src={getImageUrl(image.imageUrl)}
-                      alt={`${project.name} - imagen`}
-                      className="w-full h-64 object-cover rounded-lg shadow-md"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
+        </div>
+
+        {/* Gallery */}
+        {project.images && project.images.length > 0 && (
+          <div className="mt-12">
+            <h3 className="text-white text-lg font-bold mb-4">Galer&iacute;a de Im&aacute;genes</h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              {project.images.map((image) => (
+                <div key={image.id} className="overflow-hidden rounded shadow-md">
+                  <img
+                    src={getImageUrl(image.imageUrl)}
+                    alt={`${project.name} - imagen`}
+                    className="w-full h-64 object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Back button */}
+        <div className="text-center mt-12 pt-8">
+          <a href="/#laboratorio" className="nav-btn lab">
+            <i className="ti ti-flask"></i>
+            Laboratorio
+          </a>
         </div>
       </div>
     </div>

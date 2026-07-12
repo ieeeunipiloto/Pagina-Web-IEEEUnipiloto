@@ -13,6 +13,9 @@
   --azul-fondo: #030d38;
   --cyber-blue: #00d4ff;
   --cyber-red: #ff3b3b;
+  --section-gap: 6rem;
+  --card-radius: 14px;
+  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ================================
@@ -26,14 +29,22 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--azul-fondo);
   color: var(--blanco);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(0, 212, 255, 0.3);
+  color: var(--blanco);
 }
 
 /* ================================
@@ -56,13 +67,62 @@ html {
    ================================ */
 
 .section-title {
-  border-left: 6px solid var(--cyber-blue);
-  padding-left: 15px;
+  border-left: 4px solid var(--cyber-blue);
+  padding-left: 16px;
   color: var(--blanco);
   font-weight: 700;
-  margin-bottom: 30px;
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
   text-transform: uppercase;
 }
+
+.section-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  font-weight: 400;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* ================================
+   GLOW DE ABEJAS
+   ================================ */
+
+.bee-glow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bee-glow::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  opacity: 0.35;
+  z-index: 0;
+  filter: blur(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  will-change: transform, opacity;
+}
+
+.bee-glow:hover::before {
+  opacity: 0.6;
+  transform: scale(1.15);
+}
+
+.bee-glow img,
+.bee-glow .motion-img {
+  position: relative;
+  z-index: 1;
+}
+
+.bee-glow-azul::before { background: radial-gradient(circle, #00d4ff 0%, #00d4ff40 50%, transparent 70%); }
+.bee-glow-rojo::before { background: radial-gradient(circle, #dc3545 0%, #dc354540 50%, transparent 70%); }
+.bee-glow-verde::before { background: radial-gradient(circle, #059669 0%, #05966940 50%, transparent 70%); }
+.bee-glow-cyan::before { background: radial-gradient(circle, #0891b2 0%, #0891b240 50%, transparent 70%); }
+.bee-glow-rosa::before { background: radial-gradient(circle, #f05f7c 0%, #f05f7c40 50%, transparent 70%); }
 
 /* ================================
    ANIMACIONES PERSONALIZADAS
@@ -78,15 +138,106 @@ html {
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
 /* ================================
-   CARD HOVER EFFECTS
+   TARJETAS — Sistema de Cards Moderno
    ================================ */
 
+.card-moderno {
+  border-radius: var(--card-radius);
+  transition: transform var(--transition-smooth),
+              box-shadow var(--transition-smooth);
+  overflow: hidden;
+}
+
+.card-moderno:hover {
+  transform: translateY(-4px);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background var(--transition-smooth),
+              border-color var(--transition-smooth),
+              transform var(--transition-smooth),
+              box-shadow var(--transition-smooth);
+}
+
+.card-glass:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card-light {
+  background: #ffffff;
+  border-radius: var(--card-radius);
+  transition: transform var(--transition-smooth),
+              box-shadow var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card-light:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.card-accent-top {
+  border-top: 3px solid transparent;
+}
+
+.card-accent-top.azul { border-top-color: #0d6efd; }
+.card-accent-top.rojo { border-top-color: var(--rojo-lab); }
+
+/* Legacy — backwards compat */
+.tarjeta-dinamica {
+  border-radius: var(--card-radius) !important;
+  transition: transform var(--transition-smooth), 
+              box-shadow var(--transition-smooth),
+              border-color 0.4s ease;
+  overflow: hidden;
+  border: none !important;
+}
+
+.tarjeta-dinamica:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.tarjeta-mision-vision {
+  border-top: 3px solid transparent !important;
+  background-color: #f8f9fa !important;
+}
+.tarjeta-mision-vision.mision { border-top-color: #0d6efd !important; }
+.tarjeta-mision-vision.vision { border-top-color: #dc3545 !important; }
+
+.tarjeta-oscura-dinamica {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.tarjeta-oscura-dinamica:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 .card-dynamic {
-  @apply rounded-2xl transition-all duration-300 ease-out overflow-hidden;
+  @apply rounded-xl transition-all duration-300 ease-out overflow-hidden;
 }
 
 .card-dynamic:hover {
@@ -94,7 +245,131 @@ html {
 }
 
 /* ================================
-   BUTTON STYLES
+   TARJETAS DE PROYECTOS
+   ================================ */
+
+.card-proyecto {
+  border: none;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background: #ffffff;
+}
+.card-proyecto:hover { 
+  transform: translateY(-5px); 
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+.card-proyecto img {
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.card-proyecto:hover img {
+  transform: scale(1.03);
+}
+.card-proyecto .card-body { border-top: 3px solid #007bff; }
+
+/* ================================
+   POST CARDS
+   ================================ */
+
+.post-card { 
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  transition: all var(--transition-smooth); 
+}
+.post-card:hover { 
+  background-color: #ffffff !important; 
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15) !important;
+}
+
+/* ================================
+   FOTOS DE MIEMBROS IEEE
+   ================================ */
+
+.foto-director {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 212, 255, 0.2);
+  transition: border-color 0.3s ease;
+}
+.foto-director:hover {
+  border-color: var(--cyber-blue);
+}
+
+.foto-miembro {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(220, 53, 69, 0.15);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.foto-miembro:hover {
+  border-color: var(--rojo-lab);
+  transform: scale(1.05);
+}
+
+/* ================================
+   BOTONES — NAV-BTN
+   ================================ */
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s;
+  text-decoration: none;
+  margin: 4px;
+  letter-spacing: 0.01em;
+}
+
+.nav-btn i {
+  font-size: 16px;
+  transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.nav-btn:hover  { transform: translateY(-2px); }
+.nav-btn:active { transform: scale(0.96); }
+
+/* Estados base */
+.nav-btn.ieee     { border: 1.5px solid #0891b2 ; color: #0891b2 ; background: transparent; }
+.nav-btn.lab      { border: 1.5px solid #f3961e ; color: #f3961e ; background: transparent; }
+.nav-btn.blog     { border: 1.5px solid #059669 ; color: #059669 ; background: transparent; }
+.nav-btn.contacto { border: 1.5px solid #db2777 ; color: #db2777 ; background: transparent; }
+.nav-btn.Git      { border: 1.5px solid #27dbcf ; color: #27dbcf ; background: transparent; }
+.nav-btn.enlace   { border: 1.5px solid #96053d ; color: #96053d ; background: transparent; }
+.nav-btn.home     { border: 1.5px solid #f05f7c ; color: #f05f7c ; background: transparent; }
+
+/* Estados Hover */
+.nav-btn.ieee:hover     { background: #0891b2 ; color: #fff ; box-shadow: 0 4px 14px rgba(8, 145, 178, 0.3); }
+.nav-btn.lab:hover      { background: #f3961e ; color: #fff ; box-shadow: 0 4px 14px rgba(243, 150, 30, 0.3); }
+.nav-btn.blog:hover     { background: #059669 ; color: #fff ; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3); }
+.nav-btn.contacto:hover { background: #db2777 ; color: #fff ; box-shadow: 0 4px 14px rgba(219, 39, 119, 0.3); }
+.nav-btn.enlace:hover   { background: #96053d ; color: #fff ; box-shadow: 0 4px 14px rgba(150, 5, 61, 0.3); }
+.nav-btn.Git:hover      { background: #27dbcf ; color: #fff ; box-shadow: 0 4px 14px rgba(39, 219, 207, 0.3); }
+.nav-btn.home:hover     { background: #f05f7c ; color: #fff ; box-shadow: 0 4px 14px rgba(240, 95, 124, 0.3); }
+
+/* Icon hover effects */
+.nav-btn.ieee:hover i     { transform: rotate(-10deg) scale(1.2); }
+.nav-btn.lab:hover i      { transform: translateX(5px); }
+.nav-btn.blog:hover i     { transform: translateY(-4px); }
+.nav-btn.contacto:hover i { transform: rotate(15deg) scale(1.15); }
+.nav-btn.enlace:hover i   { transform: rotate(15deg) scale(1.15); }
+.nav-btn.Git:hover i      { transform: rotate(15deg) scale(1.15); }
+.nav-btn.home:hover i     { transform: rotate(15deg) scale(1.15); }
+
+/* ================================
+   BUTTON STYLES (btn-cyber)
    ================================ */
 
 .btn-cyber {
@@ -115,15 +390,12 @@ html {
   @apply text-base transition-transform duration-200;
 }
 
-/* Variantes de botones */
 .btn-ieee {
   @apply border-cyan-600 text-cyan-600 bg-transparent;
 }
-
 .btn-ieee:hover {
   @apply bg-cyan-600 text-white;
 }
-
 .btn-ieee:hover i {
   @apply rotate-[-10deg] scale-110;
 }
@@ -131,11 +403,9 @@ html {
 .btn-lab {
   @apply border-orange-500 text-orange-500 bg-transparent;
 }
-
 .btn-lab:hover {
   @apply bg-orange-500 text-white;
 }
-
 .btn-lab:hover i {
   @apply translate-x-1;
 }
@@ -143,11 +413,9 @@ html {
 .btn-blog {
   @apply border-green-600 text-green-600 bg-transparent;
 }
-
 .btn-blog:hover {
   @apply bg-green-600 text-white;
 }
-
 .btn-blog:hover i {
   @apply -translate-y-1;
 }
@@ -155,11 +423,9 @@ html {
 .btn-contact {
   @apply border-pink-600 text-pink-600 bg-transparent;
 }
-
 .btn-contact:hover {
   @apply bg-pink-600 text-white;
 }
-
 .btn-contact:hover i {
   @apply rotate-[15deg] scale-110;
 }
@@ -168,19 +434,11 @@ html {
    LOADING SKELETON
    ================================ */
 
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
 .skeleton {
-  @apply bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200;
+  @apply bg-gradient-to-r from-dark-600/50 via-dark-500/50 to-dark-600/50;
   background-size: 2000px 100%;
   animation: shimmer 2s infinite linear;
+  border-radius: var(--card-radius);
 }
 
 /* ================================
@@ -188,7 +446,7 @@ html {
    ================================ */
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -197,7 +455,7 @@ html {
 
 ::-webkit-scrollbar-thumb {
   background: var(--cyber-blue);
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -205,10 +463,37 @@ html {
 }
 
 /* ================================
+   SECTION DIVIDER
+   ================================ */
+
+.section-divider {
+  width: 3rem;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-red));
+  border-radius: 2px;
+  margin: 1rem auto 0;
+}
+
+/* ================================
+   FOCUS RINGS
+   ================================ */
+
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--cyber-blue);
+  outline-offset: 2px;
+}
+
+/* ================================
    RESPONSIVE UTILITIES
    ================================ */
 
 @media (max-width: 768px) {
+  :root {
+    --section-gap: 3rem;
+  }
+  
   .pixel-title {
     font-size: 2rem;
   }

@@ -1,6 +1,14 @@
+/**
+ * routes/post.routes.ts — Definición de rutas para el recurso Posts.
+ *
+ * Sigue el mismo patrón que project.routes.ts con validación Zod.
+ * Los endpoints permiten CRUD completo de posts e imágenes asociadas.
+ */
+
 import { Router } from 'express';
 import { postController } from '../controllers/post.controller';
 import { validate } from '../middlewares/validation';
+import { requireAdmin } from '../middlewares/requireAdmin';
 import { 
   createPostSchema, 
   updatePostSchema, 
@@ -9,55 +17,56 @@ import {
 
 const router = Router();
 
-/**
- * Rutas de Posts (Eventos/Blog)
- */
-
-// GET /api/posts - Obtener todos los posts
+/* GET / — Listar todos los posts */
 router.get(
   '/',
   postController.getAllPosts.bind(postController)
 );
 
-// GET /api/posts/:id - Obtener post por ID
+/* GET /:id — Obtener post por UUID */
 router.get(
   '/:id',
   validate(postIdSchema, 'params'),
   postController.getPostById.bind(postController)
 );
 
-// POST /api/posts - Crear nuevo post
+/* POST / — Crear post (valida body con createPostSchema) */
 router.post(
   '/',
+  requireAdmin,
   validate(createPostSchema, 'body'),
   postController.createPost.bind(postController)
 );
 
-// PUT /api/posts/:id - Actualizar post
+/* PUT /:id — Actualizar post */
 router.put(
   '/:id',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   validate(updatePostSchema, 'body'),
   postController.updatePost.bind(postController)
 );
 
-// DELETE /api/posts/:id - Eliminar post
+/* DELETE /:id — Eliminar post */
 router.delete(
   '/:id',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   postController.deletePost.bind(postController)
 );
 
-// POST /api/posts/:id/images - Agregar imagen a post
+/* POST /:id/images — Agregar imagen a post */
 router.post(
   '/:id/images',
+  requireAdmin,
   validate(postIdSchema, 'params'),
   postController.addPostImage.bind(postController)
 );
 
-// DELETE /api/posts/images/:imageId - Eliminar imagen de post
+/* DELETE /images/:imageId — Eliminar imagen de post */
 router.delete(
   '/images/:imageId',
+  requireAdmin,
   postController.deletePostImage.bind(postController)
 );
 

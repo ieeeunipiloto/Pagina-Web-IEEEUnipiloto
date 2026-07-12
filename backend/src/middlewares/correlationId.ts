@@ -1,12 +1,21 @@
+/**
+ * middlewares/correlationId.ts — Middleware de trazabilidad con Correlation ID.
+ *
+ * Asigna un UUID único a cada petición HTTP para rastrear su flujo
+ * a través de todo el sistema (frontend, API, base de datos, logs).
+ *
+ * Comportamiento:
+ * 1. Si el cliente envía un header x-correlation-id, lo reutiliza.
+ * 2. Si no, genera un nuevo UUID v4.
+ * 3. Incluye el correlationId en el header de respuesta.
+ * 4. Lo adjunta a req.correlationId para uso en toda la app.
+ *
+ * Esto permite correlacionar logs del frontend con logs del backend.
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { envConfig } from '../config/environment';
-
-/**
- * Middleware de Correlation ID
- * Genera o extrae un ID único para rastrear peticiones a través de todo el sistema
- * Esencial para observabilidad y debugging distribuido
- */
 
 declare global {
   namespace Express {
@@ -21,14 +30,10 @@ export const correlationIdMiddleware = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Obtener correlation ID del header o generar uno nuevo
   const correlationId =
     (req.headers[envConfig.correlationIdHeader] as string) || uuidv4();
 
-  // Adjuntar al request para uso en toda la aplicación
   req.correlationId = correlationId;
-
-  // Incluir en la respuesta para trazabilidad
   res.setHeader(envConfig.correlationIdHeader, correlationId);
 
   next();

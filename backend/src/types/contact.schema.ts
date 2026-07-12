@@ -1,3 +1,11 @@
+/**
+ * types/contact.schema.ts — Schema Zod de validación para Contacto.
+ *
+ * Valida los datos del formulario de contacto:
+ * - email: debe ser una dirección de correo electrónico válida.
+ * - message: entre 10 y 2000 caracteres.
+ */
+
 import { z } from 'zod';
 
 export const contactSchema = z.object({

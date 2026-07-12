@@ -1,17 +1,27 @@
+/**
+ * controllers/post.controller.ts — Controlador HTTP para Posts (Eventos/Blog).
+ *
+ * Capa de presentación de la API REST para el recurso "posts".
+ * Sigue el mismo patrón que ProjectController: delega al servicio
+ * correspondiente y formatea respuestas con correlationId.
+ *
+ * Endpoints manejados:
+ * - GET    /api/posts              → getAllPosts
+ * - GET    /api/posts/:id          → getPostById
+ * - POST   /api/posts              → createPost
+ * - PUT    /api/posts/:id          → updatePost
+ * - DELETE /api/posts/:id          → deletePost
+ * - POST   /api/posts/:id/images   → addPostImage
+ * - DELETE /api/posts/images/:id   → deletePostImage
+ */
+
 import { Request, Response } from 'express';
 import { postService } from '../services/post.service';
 import { CreatePostInput, UpdatePostInput } from '../types/post.schema';
 import { auditLog } from '../config/logger';
 
-/**
- * Controlador de Posts (Eventos/Blog)
- * Maneja las peticiones HTTP y delega la lógica al servicio
- */
-
 export class PostController {
-  /**
-   * GET /api/posts
-   */
+  /** GET /api/posts — Listar todos los posts */
   async getAllPosts(req: Request, res: Response): Promise<void> {
     const posts = await postService.getAllPosts();
     
@@ -23,9 +33,7 @@ export class PostController {
     });
   }
 
-  /**
-   * GET /api/posts/:id
-   */
+  /** GET /api/posts/:id — Obtener post por UUID */
   async getPostById(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const post = await postService.getPostById(id);
@@ -37,9 +45,7 @@ export class PostController {
     });
   }
 
-  /**
-   * POST /api/posts
-   */
+  /** POST /api/posts — Crear nuevo post (auditado) */
   async createPost(req: Request, res: Response): Promise<void> {
     const data: CreatePostInput = req.body;
     const post = await postService.createPost(data);
@@ -58,9 +64,7 @@ export class PostController {
     });
   }
 
-  /**
-   * PUT /api/posts/:id
-   */
+  /** PUT /api/posts/:id — Actualizar post existente (auditado) */
   async updatePost(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const data: UpdatePostInput = req.body;
@@ -79,9 +83,7 @@ export class PostController {
     });
   }
 
-  /**
-   * DELETE /api/posts/:id
-   */
+  /** DELETE /api/posts/:id — Eliminar post (auditado) */
   async deletePost(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     await postService.deletePost(id);
@@ -98,9 +100,7 @@ export class PostController {
     });
   }
 
-  /**
-   * POST /api/posts/:id/images
-   */
+  /** POST /api/posts/:id/images — Agregar imagen a post */
   async addPostImage(req: Request, res: Response): Promise<void> {
     const { id: postId } = req.params;
     const { imageUrl } = req.body;
@@ -115,9 +115,7 @@ export class PostController {
     });
   }
 
-  /**
-   * DELETE /api/posts/images/:imageId
-   */
+  /** DELETE /api/posts/images/:imageId — Eliminar imagen de post */
   async deletePostImage(req: Request, res: Response): Promise<void> {
     const { imageId } = req.params;
     await postService.deletePostImage(imageId);

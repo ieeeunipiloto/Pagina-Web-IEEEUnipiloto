@@ -1,5 +1,14 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// schema.prisma — Esquema de base de datos PostgreSQL con Prisma ORM.
+//
+// Define dos modelos principales: Project (proyectos de laboratorio) y
+// Post (eventos y bitácoras), cada uno con su tabla de imágenes relacionada.
+//
+// Convenciones:
+// - IDs: UUID v4 generados automáticamente.
+// - Nombres en snake_case en la BD (@map), camelCase en el código.
+// - Timestamps: createdAt (autogenerado), updatedAt (automático).
+// - Relaciones en cascada: eliminar un proyecto/post elimina sus imágenes.
+// - Índices: en startDate y foreign keys para optimizar consultas.
 
 generator client {
   provider = "prisma-client-js"
@@ -10,72 +19,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ================================
+// ──────────────────────────────────────────────
 // PROYECTOS DE LABORATORIO
-// ================================
+// ──────────────────────────────────────────────
 
+// Almacena los proyectos del semillero con su documentación técnica,
+// imagen principal, fecha de inicio y enlace opcional al repositorio.
 model Project {
-  id          String   @id @default(uuid())
-  name        String
-  shortDesc   String   @map("short_desc")
-  documentation String @db.Text
-  mainImage   String?  @map("main_image")
-  startDate   DateTime @default(now()) @map("start_date")
-  repoUrl     String?  @map("repo_url")
+  id            String         @id @default(uuid())
+  name          String
+  shortDesc     String         @map("short_desc")
+  documentation String         @db.Text
+  mainImage     String?        @map("main_image")
+  startDate     DateTime       @default(now()) @map("start_date")
+  repoUrl       String?        @map("repo_url")
   
-  images      ProjectImage[]
+  images        ProjectImage[] // Relación uno a muchos con ProjectImage
   
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt      @map("updated_at")
   
-  @@map("projects")
-  @@index([startDate])
+  @@map("projects")        // Nombre de la tabla en PostgreSQL
+  @@index([startDate])     // Índice para ordenar por fecha
 }
 
+// Imágenes asociadas a un proyecto. Se eliminan en cascada
+// cuando el proyecto padre es eliminado.
 model ProjectImage {
-  id        String  @id @default(uuid())
-  projectId String  @map("project_id")
-  imageUrl  String  @map("image_url")
+  id        String   @id @default(uuid())
+  projectId String   @map("project_id")
+  imageUrl  String   @map("image_url")
   
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now()) @map("created_at")
   
   @@map("project_images")
-  @@index([projectId])
+  @@index([projectId]) // Índice para búsquedas por proyecto
 }
 
-// ================================
+// ──────────────────────────────────────────────
 // EVENTOS Y BLOG
-// ================================
+// ──────────────────────────────────────────────
 
+// Almacena posts que pueden ser eventos (con eventLink y rango de fechas)
+// o bitácoras (solo contenido informativo).
 model Post {
-  id         String    @id @default(uuid())
-  title      String
-  content    String    @db.Text
-  startDate  DateTime  @default(now()) @map("start_date")
-  endDate    DateTime? @map("end_date")
-  mainImage  String?   @map("main_image")
-  eventLink  String?   @map("event_link")
+  id        String      @id @default(uuid())
+  title     String
+  content   String      @db.Text
+  startDate DateTime    @default(now()) @map("start_date")
+  endDate   DateTime?   @map("end_date")     // Opcional: solo para eventos con duración
+  mainImage String?     @map("main_image")
+  eventLink String?     @map("event_link")   // Enlace externo (ej. formulario)
   
-  images     PostImage[]
+  images    PostImage[] // Relación uno a muchos con PostImage
   
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt      @map("updated_at")
   
   @@map("posts")
   @@index([startDate])
 }
 
+// Imágenes asociadas a un post. Eliminación en cascada.
 model PostImage {
-  id        String @id @default(uuid())
-  postId    String @map("post_id")
-  imageUrl  String @map("image_url")
+  id        String   @id @default(uuid())
+  postId    String   @map("post_id")
+  imageUrl  String   @map("image_url")
   
-  post      Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   
   createdAt DateTime @default(now()) @map("created_at")
   
   @@map("post_images")
   @@index([postId])
+}
+
+// ──────────────────────────────────────────────
+// MIEMBROS DE LA RAMA IEEE
+// ──────────────────────────────────────────────
+
+// Almacena los integrantes de la rama estudiantil IEEE Unipiloto.
+// Cada miembro tiene nombre, cargo, descripción y foto opcional.
+model Member {
+  id          String   @id @default(uuid())
+  name        String   @map("name")
+  role        String   @map("role")         // Cargo dentro de la rama (Presidente, Vicepresidente, Miembro, etc.)
+  description String   @map("description")  @db.Text
+  photo       String?  @map("photo")        // URL de la foto (subida como las imágenes de proyectos)
+  isLeader    Boolean  @default(false)      @map("is_leader") // true para el director/counselor (se muestra aparte)
+
+  createdAt   DateTime @default(now())      @map("created_at")
+  updatedAt   DateTime @updatedAt           @map("updated_at")
+
+  @@map("members")
 }

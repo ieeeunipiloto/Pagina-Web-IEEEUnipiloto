@@ -1,10 +1,19 @@
+/**
+ * middlewares/validation.ts — Middleware de validación con Zod.
+ *
+ * Middleware genérico que valida cualquier fuente de datos
+ * (body, query params, route params) contra un schema de Zod.
+ *
+ * Uso típico:
+ *   router.post('/', validate(createProjectSchema), controller.create)
+ *   router.get('/:id', validate(projectIdSchema, 'params'), controller.get)
+ *
+ * Si la validación falla, devuelve 400 con detalles campo por campo
+ * y el correlationId para trazabilidad.
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import { AnyZodObject, ZodError } from 'zod';
-
-/**
- * Middleware de validación usando Zod
- * Valida request body, query params y params de ruta
- */
 
 type ValidateSource = 'body' | 'query' | 'params';
 
@@ -12,7 +21,6 @@ export const validate =
   (schema: AnyZodObject, source: ValidateSource = 'body') =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // Validar la fuente especificada
       const data = req[source];
       await schema.parseAsync(data);
       next();

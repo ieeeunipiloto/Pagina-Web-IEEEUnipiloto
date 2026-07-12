@@ -1,3 +1,12 @@
+# docker-compose.yml — Orquestación de servicios para el Semillero IOT E ITSS.
+#
+# Define tres servicios:
+#   1. postgres  - Base de datos PostgreSQL 16 con healthcheck.
+#   2. backend   - API Express compilada en TypeScript, espera a que postgres esté sano.
+#   3. frontend  - App React servida por Nginx, depende del backend.
+#
+# Red: semillero-network (bridge). Volumen persistente para datos de PostgreSQL.
+
 version: '3.8'
 
 services:

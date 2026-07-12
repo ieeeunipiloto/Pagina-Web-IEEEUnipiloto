@@ -1,12 +1,33 @@
+/**
+ * config/environment.ts — Validación y configuración de variables de entorno.
+ *
+ * Utiliza Zod para definir un schema de validación estricto que garantiza
+ * que todas las variables de entorno requeridas estén presentes y tengan
+ * el formato correcto antes de que la aplicación arranque.
+ *
+ * Principio: Fail-Fast — si la configuración es inválida, el proceso
+ * termina inmediatamente con mensajes claros de los errores encontrados.
+ *
+ * Variables validadas:
+ * - Generales: NODE_ENV, PORT
+ * - Base de datos: DATABASE_URL
+ * - CORS: CORS_ORIGIN
+ * - Rate Limiting: RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS
+ * - Logging: LOG_LEVEL, LOG_FORMAT
+ * - Archivos: MAX_FILE_SIZE_MB, ALLOWED_FILE_TYPES
+ * - Observabilidad: CORRELATION_ID_HEADER, ENABLE_METRICS
+ * - Mantenimiento: MAINTENANCE_MODE
+ * - Email/SMTP: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL
+ */
+
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
-// Cargar variables de entorno desde .env.example
 dotenv.config({ path: '.env' });
 
 /**
- * Schema de validación para variables de entorno
- * Aplica principio de fail-fast: si la configuración es inválida, no arrancar
+ * Schema Zod para validar todas las variables de entorno.
+ * Cada campo define tipo, validación y valor por defecto.
  */
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
@@ -14,12 +35,13 @@ const envSchema = z.object({
   
   DATABASE_URL: z.string().url('DATABASE_URL debe ser una URL válida'),
   
-  
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   
   RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default('900000'),
   RATE_LIMIT_MAX_REQUESTS: z.string().transform(Number).default('100'),
   
+  ADMIN_API_KEY: z.string().min(1, 'ADMIN_API_KEY es requerida para proteger rutas de escritura'),
+
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
   LOG_FORMAT: z.enum(['json', 'simple']).default('json'),
   
@@ -41,7 +63,8 @@ const envSchema = z.object({
 });
 
 /**
- * Validar y exportar configuración
+ * Parsea y valida las variables de entorno.
+ * En caso de error, imprime los detalles y termina el proceso.
  */
 const parseEnv = () => {
   try {
@@ -61,19 +84,20 @@ const parseEnv = () => {
 const env = parseEnv();
 
 /**
- * Configuración centralizada de la aplicación
+ * Objeto de configuración tipado y de solo lectura.
+ * Provee acceso centralizado a todas las variables de entorno
+ * con valores ya transformados (números, booleanos, etc.).
  */
 export const envConfig = {
-  // General
+  // Generales
   nodeEnv: env.NODE_ENV,
   port: env.PORT,
   isProduction: env.NODE_ENV === 'production',
   isDevelopment: env.NODE_ENV === 'development',
   isTest: env.NODE_ENV === 'test',
   
-  // Database
+  // Base de datos
   databaseUrl: env.DATABASE_URL,
-  
   
   // CORS
   corsOrigin: env.CORS_ORIGIN,
@@ -82,11 +106,14 @@ export const envConfig = {
   rateLimitWindowMs: env.RATE_LIMIT_WINDOW_MS,
   rateLimitMaxRequests: env.RATE_LIMIT_MAX_REQUESTS,
   
+  // Admin API Key
+  adminApiKey: env.ADMIN_API_KEY,
+
   // Logging
   logLevel: env.LOG_LEVEL,
   logFormat: env.LOG_FORMAT,
   
-  // Files
+  // Archivos
   maxFileSizeMB: env.MAX_FILE_SIZE_MB,
   maxFileSizeBytes: env.MAX_FILE_SIZE_MB * 1024 * 1024,
   allowedFileTypes: env.ALLOWED_FILE_TYPES.split(','),
@@ -109,5 +136,5 @@ export const envConfig = {
   contactEmail: env.CONTACT_EMAIL,
 } as const;
 
-// Tipo inferido de la configuración
+/** Tipo inferido para uso en otros módulos */
 export type EnvConfig = typeof envConfig;

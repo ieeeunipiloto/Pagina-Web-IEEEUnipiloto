@@ -1,12 +1,33 @@
+/**
+ * middlewares/errorHandler.ts — Manejo global de errores HTTP.
+ *
+ * Centraliza el logging y la respuesta de errores en toda la aplicación.
+ * Clasifica errores por tipo y devuelve respuestas HTTP apropiadas:
+ *
+ * Tipos de error manejados:
+ * 1. ZodError        → 400 (errores de validación de schema)
+ * 2. AppError        → statusCode personalizado (400, 404, etc.)
+ * 3. MulterError     → 400 (subida de archivos)
+ * 4. File type error → 400 (tipo de archivo no permitido)
+ * 5. PrismaError     → 400 (errores de base de datos)
+ * 6. Error genérico  → 500 (no expone detalles en producción)
+ *
+ * Clases de error exportadas:
+ * - AppError: clase base con statusCode y isOperational
+ * - ValidationError: 400 Bad Request
+ * - NotFoundError: 404 Not Found (con nombre del recurso)
+ */
+
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { logger } from '../config/logger';
 import { envConfig } from '../config/environment';
 
-/**
- * Clases de error personalizadas
- */
+// ──────────────────────────────────────────────
+// CLASES DE ERROR PERSONALIZADAS
+// ──────────────────────────────────────────────
 
+/** Error base de la aplicación con código HTTP */
 export class AppError extends Error {
   constructor(
     public statusCode: number,
@@ -19,6 +40,7 @@ export class AppError extends Error {
   }
 }
 
+/** Error de validación (400 Bad Request) */
 export class ValidationError extends AppError {
   constructor(message: string) {
     super(400, message);
@@ -26,6 +48,7 @@ export class ValidationError extends AppError {
   }
 }
 
+/** Error de recurso no encontrado (404) */
 export class NotFoundError extends AppError {
   constructor(resource: string) {
     super(404, `${resource} no encontrado`);
@@ -33,20 +56,23 @@ export class NotFoundError extends AppError {
   }
 }
 
-
+// ──────────────────────────────────────────────
+// MIDDLEWARE DE ERRORES
+// ──────────────────────────────────────────────
 
 /**
- * Middleware global de manejo de errores
- * Centraliza el manejo y logging de errores de toda la aplicación
+ * errorHandler — Middleware global de Express (4 parámetros).
+ * Captura cualquier error lanzado en la cadena de middlewares/rutas
+ * y devuelve una respuesta JSON estructurada.
+ *
+ * Incluye logging detallado con correlationId para trazabilidad.
  */
 export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ): void => {
-  // Log del error con contexto
   logger.error('Error capturado:', {
     name: err.name,
     message: err.message,
@@ -57,7 +83,7 @@ export const errorHandler = (
     ip: req.ip,
   });
 
-  // Errores de validación Zod
+  /* Zod: errores de validación con detalles campo por campo */
   if (err instanceof ZodError) {
     res.status(400).json({
       error: 'Error de validación',
@@ -70,7 +96,7 @@ export const errorHandler = (
     return;
   }
 
-  // Errores de aplicación personalizados
+  /* AppError: errores personalizados con código específico */
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
       error: err.message,
@@ -79,7 +105,7 @@ export const errorHandler = (
     return;
   }
 
-  // Errores de Multer (subida de archivos)
+  /* Multer: errores de subida de archivos */
   if (err.name === 'MulterError') {
     const multerErr = err as unknown as { code: string; field?: string; message: string };
     res.status(400).json({
@@ -89,7 +115,7 @@ export const errorHandler = (
     return;
   }
 
-  // Errores de archivo no permitido (lanzados por fileFilter)
+  /* Tipo de archivo no permitido */
   if (err.message?.includes('Tipo de archivo no permitido')) {
     res.status(400).json({
       error: err.message,
@@ -98,7 +124,7 @@ export const errorHandler = (
     return;
   }
 
-  // Errores de Prisma (base de datos)
+  /* Prisma: errores de base de datos */
   if (err.name === 'PrismaClientKnownRequestError') {
     res.status(400).json({
       error: 'Error en la operación de base de datos',
@@ -107,7 +133,7 @@ export const errorHandler = (
     return;
   }
 
-  // Error genérico (no exponer detalles en producción)
+  /* Error genérico: no exponer stack en producción */
   res.status(500).json({
     error: envConfig.isProduction
       ? 'Error interno del servidor'

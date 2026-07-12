@@ -1,4 +1,15 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * tailwind.config.js — Configuración del tema de Tailwind CSS.
+ *
+ * Define la paleta de colores institucional (primary, danger, dark, cyber),
+ * fuentes tipográficas (Bungee Shade para títulos, Segoe UI para texto),
+ * y animaciones reutilizables (float, pulse-slow, bounce-slow).
+ *
+ * Los colores "cyber" se usan en la temática de ciudad inteligente y
+ * efectos visuales de la escena 3D.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 export default {
   content: [
     "./index.html",
@@ -55,17 +66,33 @@ export default {
       },
       fontFamily: {
         pixel: ['"Bungee Shade"', 'cursive'],
-        sans: ['"Segoe UI"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+        sans: ['Inter', '"Segoe UI"', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],
       },
       animation: {
-        'float': 'float 3s ease-in-out infinite',
+        'float': 'float 4s ease-in-out infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'bounce-slow': 'bounce 2s infinite',
+        'fade-in': 'fadeIn 0.6s ease-out forwards',
+        'slide-up': 'slideUp 0.6s ease-out forwards',
+        'scale-in': 'scaleIn 0.4s ease-out forwards',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },
     },

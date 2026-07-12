@@ -18,7 +18,7 @@ export default function PostDetail() {
   if (isPending) {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
-        <div className="text-white text-xl">Cargando publicación...</div>
+        <div className="text-white text-xl">Cargando publicaci&oacute;n...</div>
       </div>
     );
   }
@@ -32,9 +32,9 @@ export default function PostDetail() {
     return (
       <div className="min-h-screen bg-[#030d38] py-16 flex items-center justify-center">
         <div className="text-center max-w-md">
-          <p className="text-red-400 text-xl mb-2">Error al cargar publicación</p>
+          <p className="text-red-400 text-xl mb-2">Error al cargar publicaci&oacute;n</p>
           <p className="text-gray-400 text-sm mb-6">{errorMessage}</p>
-          <Link to="/" className="btn-cyber btn-blog">
+          <Link to="/" className="nav-btn blog">
             <i className="ti ti-arrow-left"></i>
             Volver al inicio
           </Link>
@@ -43,93 +43,113 @@ export default function PostDetail() {
     );
   }
 
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+  const allImages = [
+    ...(post.mainImage ? [post.mainImage] : []),
+    ...post.images.map((img) => img.imageUrl),
+  ];
+
   return (
-    <div className="min-h-screen bg-[#030d38] py-16">
-      <div className="container mx-auto px-4">
-        <Link to="/#blog" className="btn-cyber btn-blog mb-8 inline-flex">
-          <i className="ti ti-arrow-left"></i>
-          Volver al blog
-        </Link>
-
-        <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
-          {post.mainImage && (
-            <img
-              src={getImageUrl(post.mainImage)}
-              alt={post.title}
-              className="w-full h-96 object-cover"
-            />
-          )}
-
-          <div className="p-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {post.title}
-            </h1>
-
-            <div className="flex items-center gap-4 text-gray-600 mb-6">
-              <div className="flex items-center gap-2">
-                <i className="ti ti-calendar"></i>
-                <span>
-                  {new Date(post.startDate).toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+    <div className="min-h-screen bg-[#030d38]">
+      <div className="container mx-auto px-4 py-20 md:py-28">
+        <div className="flex flex-col items-center text-center">
+          <div className="max-w-4xl w-full">
+            {/* Header with pill badge */}
+            <div className="text-left mb-6">
+              <div style={{ borderLeft: '5px solid #0891b2', paddingLeft: '16px', marginBottom: '24px' }}>
+                <span className="inline-flex items-center gap-1.5" style={{
+                  background: 'transparent',
+                  border: '1.5px solid #0891b2',
+                  color: '#0891b2',
+                  borderRadius: '999px',
+                  padding: '3px 12px',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                }}>
+                  <i className="ti ti-circuit-board"></i>
+                  {post.eventLink ? 'Evento' : 'Bitácora de Investigación'}
                 </span>
+                <h1 className="text-2xl md:text-4xl font-extrabold text-white mt-2 leading-tight">
+                  {post.title}
+                </h1>
+                <div className="text-gray-400 mt-1 text-sm">
+                  {post.endDate
+                    ? `Del ${formatDate(post.startDate)} al ${formatDate(post.endDate)}`
+                    : formatDate(post.startDate)
+                  }
+                </div>
               </div>
-              {post.endDate && (
-                <>
-                  <span>-</span>
-                  <div className="flex items-center gap-2">
-                    <i className="ti ti-calendar"></i>
-                    <span>
-                      {new Date(post.endDate).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </span>
+            </div>
+
+            {/* Image Carousel */}
+            {allImages.length > 0 && (
+              <div className="mb-10">
+                {allImages.length === 1 ? (
+                  <img
+                    src={getImageUrl(allImages[0])}
+                    alt={post.title}
+                    className="w-full rounded"
+                    style={{ height: '500px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {allImages.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={getImageUrl(img)}
+                        alt={`${post.title} - imagen ${idx + 1}`}
+                        className="w-full rounded"
+                        style={{ height: '500px', objectFit: 'cover' }}
+                      />
+                    ))}
                   </div>
-                </>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
-            <div className="prose max-w-none mb-8">
-              <div className="text-gray-700 whitespace-pre-wrap text-lg leading-relaxed">
-                {post.content}
+            {/* Content */}
+            <div className="flex justify-center">
+              <div className="w-full max-w-3xl">
+                <div
+                  className="text-gray-300 text-base leading-relaxed whitespace-pre-wrap"
+                  style={{ textAlign: 'justify' }}
+                >
+                  {post.content}
+                </div>
               </div>
             </div>
 
+            {/* External Link */}
             {post.eventLink && (
-              <div className="mb-8">
+              <div className="mt-10 pt-6 text-center">
                 <a
                   href={post.eventLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-cyber btn-contact px-8"
+                  className="nav-btn ieee btn-lg"
+                  style={{ padding: '12px 32px' }}
                 >
                   <i className="ti ti-external-link"></i>
-                  Más Información del Evento
+                  M&aacute;s Informaci&oacute;n del Evento
                 </a>
               </div>
             )}
 
-            {post.images && post.images.length > 0 && (
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Galería de Imágenes
-                </h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {post.images.map((image) => (
-                    <img
-                      key={image.id}
-                      src={getImageUrl(image.imageUrl)}
-                      alt={`${post.title} - imagen`}
-                      className="w-full h-64 object-cover rounded-lg shadow-md"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Back button */}
+            <div className="mt-12 pt-8 border-t border-white/10">
+              <a href="/#blog" className="nav-btn blog">
+                <i className="ti ti-pencil"></i>
+                Blog
+              </a>
+            </div>
           </div>
         </div>
       </div>
