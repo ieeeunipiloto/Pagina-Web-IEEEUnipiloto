@@ -155,10 +155,10 @@ export default function ProjectDetail() {
 
         {/* Back button */}
         <div className="text-center mt-12 pt-8">
-          <Link to="/#laboratorio" className="nav-btn lab">
+          <a href="/#laboratorio" className="nav-btn lab">
             <i className="ti ti-flask"></i>
             Laboratorio
-          </Link>
+          </a>
         </div>
       </div>
     </div>

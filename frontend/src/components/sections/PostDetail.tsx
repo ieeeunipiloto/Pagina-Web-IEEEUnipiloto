@@ -145,10 +145,10 @@ export default function PostDetail() {
 
             {/* Back button */}
             <div className="mt-12 pt-8 border-t border-white/10">
-              <Link to="/#blog" className="nav-btn blog">
+              <a href="/#blog" className="nav-btn blog">
                 <i className="ti ti-pencil"></i>
                 Blog
-              </Link>
+              </a>
             </div>
           </div>
         </div>

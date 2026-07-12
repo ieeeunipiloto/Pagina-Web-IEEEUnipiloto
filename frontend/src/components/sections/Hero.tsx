@@ -70,8 +70,7 @@ export default function Hero() {
       {/* Overlay suave para legibilidad */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/30 z-10" />
 
-      {/* Degradado inferior */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-[#030d38] z-30" />
+
 
       {/* Contenido principal */}
       <div className="relative z-20 h-full flex flex-col items-center justify-center text-center px-4">

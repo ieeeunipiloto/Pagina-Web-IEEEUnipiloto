@@ -16,8 +16,9 @@
  * - Datos: renderiza el contenido normalmente.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
 import Hero from './Hero';
 import { api } from '@/services/api';
 import { Project, Post } from '@/types';
@@ -71,18 +72,41 @@ export default function Home() {
   // ──────────────────────────────────────────────
 
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
+  const [calYear, setCalYear] = useState(today.getFullYear());
+  const [calMonth, setCalMonth] = useState(today.getMonth());
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
   ];
   const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const calendarDays: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) calendarDays.push(null);
   for (let i = 1; i <= daysInMonth; i++) calendarDays.push(i);
+
+  const prevMonth = () => {
+    if (calMonth === 0) { setCalMonth(11); setCalYear((y) => y - 1); }
+    else setCalMonth((m) => m - 1);
+  };
+  const nextMonth = () => {
+    if (calMonth === 11) { setCalMonth(0); setCalYear((y) => y + 1); }
+    else setCalMonth((m) => m + 1);
+  };
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const el = document.getElementById(id);
+      if (el) {
+        requestAnimationFrame(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+  }, [location]);
 
   return (
     <>
@@ -393,8 +417,22 @@ export default function Home() {
           ) : recentBitacoras.length > 0 ? (
             <div className="grid md:grid-cols-3 gap-6">
               <div className="card-light p-5 h-fit">
-                <div className="text-center font-bold text-lg text-primary-600 mb-3">
-                  {monthNames[month]} {year}
+                <div className="flex items-center justify-between mb-3">
+                  <button
+                    onClick={prevMonth}
+                    className="text-primary-600 hover:text-primary-700 transition-colors p-1 rounded hover:bg-primary-50"
+                  >
+                    <i className="ti ti-chevron-left text-lg"></i>
+                  </button>
+                  <div className="text-center font-bold text-lg text-primary-600">
+                    {monthNames[calMonth]} {calYear}
+                  </div>
+                  <button
+                    onClick={nextMonth}
+                    className="text-primary-600 hover:text-primary-700 transition-colors p-1 rounded hover:bg-primary-50"
+                  >
+                    <i className="ti ti-chevron-right text-lg"></i>
+                  </button>
                 </div>
                 <div className="grid grid-cols-7 gap-0.5 text-center mb-2">
                   {dayNames.map((d) => (
@@ -409,7 +447,7 @@ export default function Home() {
                       <div
                         key={i}
                         className={`text-xs py-1.5 rounded ${
-                          day === today.getDate()
+                          day === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear()
                             ? 'bg-[var(--rojo-lab)] text-white font-bold'
                             : 'text-gray-600 hover:bg-gray-50 transition-colors'
                         }`}

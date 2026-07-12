@@ -87,8 +87,8 @@ function generateCalendar(): string[] {
       } else if (day > daysInMonth) {
         break;
       } else {
-        const today = day === now.getDate() ? `\x1b[7m${String(day).padStart(2)}\x1b[0m` : String(day).padStart(2);
-        line += `${today} `;
+        const isToday = day === now.getDate();
+        line += isToday ? `[${String(day).padStart(2)}]` : ` ${String(day).padStart(2)} `;
         day++;
       }
     }
@@ -160,26 +160,21 @@ function processCommand(input: string): string[] {
 }
 
 const BANNER = [
-  '  ╔══════════════════════════════════════╗',
-  '  ║     SEMILLERO IOT E ITSS v2.0       ║',
-  '  ║  Universidad Piloto de Colombia     ║',
-  '  ╚══════════════════════════════════════╝',
+  '  ┌──────────────────────────────────┐',
+  '  │  SEMILLERO IoT E ITSS  v2.0     │',
+  '  │  Universidad Piloto de Colombia  │',
+  '  └──────────────────────────────────┘',
   '',
 ];
 
 const NEOFETCH = [
-  '       ████████████        semillero-iot@unipiloto',
-  '     ██            ██      -----------------------',
-  '    ██   ████████   ██     OS: Semillero IoT Linux',
-  '   ██   ██      ██   ██    Host: Universidad Piloto de Colombia',
-  '   ██   ██      ██   ██    Kernel: IoT + ITSS + Smart Cities',
-  '   ██   ██      ██   ██    Uptime: desde 2024',
-  '    ██   ████████   ██     Shell: bash 5.2',
-  '     ██            ██      DE: Cyber Theme',
-  '       ████████████        Editor: VS Code',
-  '',
-  '  Grupos: IEEE ITSS • IEEE IoT • IEEE RAS',
-  '  Laboratorio Remoto: http://lab.semilleroiot.com',
+  '  semillero-iot@unipiloto',
+  '  ──────────────────────',
+  '  OS:       Semillero IoT Linux',
+  '  Host:     Universidad Piloto de Colombia',
+  '  Kernel:   IoT + ITSS + Smart Cities',
+  '  Uptime:   desde 2024',
+  '  Grupos:   IEEE ITSS • IEEE IoT • IEEE RAS',
   '',
 ];
 
